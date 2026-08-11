@@ -17,6 +17,55 @@ fail() {
     exit 1
 }
 
+# Tambahkan INSTALL_DIR ke PATH secara permanen di shell config user.
+# Prioritas: ~/.zshrc kalau ada, kalau tidak ~/.bashrc; kalau keduanya tidak
+# ada, ~/.bashrc dibuat. Idempoten — baris export tidak pernah ditulis dua
+# kali. Kalau shell aktif cocok dengan config (bash↔.bashrc, zsh↔.zshrc),
+# config di-source otomatis supaya perintah mengploy langsung tersedia di
+# sesi ini tanpa perlu buka terminal baru.
+CONFIG_PATH=""
+update_shell_path() {
+    case ":${PATH:-}:" in
+        *:"$INSTALL_DIR":*) return 0 ;;
+    esac
+
+    HOME_DIR="${HOME:-.}"
+    if [ -f "$HOME_DIR/.zshrc" ]; then
+        CONFIG_PATH="$HOME_DIR/.zshrc"
+    elif [ -f "$HOME_DIR/.bashrc" ]; then
+        CONFIG_PATH="$HOME_DIR/.bashrc"
+    else
+        CONFIG_PATH="$HOME_DIR/.bashrc"
+        : >"$CONFIG_PATH"
+    fi
+
+    LINE="export PATH=\"$INSTALL_DIR:\$PATH\""
+    if grep -qsF "$LINE" "$CONFIG_PATH"; then
+        say "PATH sudah terdaftar di $CONFIG_PATH"
+        return 0
+    fi
+
+    printf '\n# ditambahkan oleh installer mengploy (jangan dihapus)\n%s\n' "$LINE" >>"$CONFIG_PATH"
+    say "PATH ditambahkan ke $CONFIG_PATH"
+
+    # Source otomatis hanya kalau shell aktif cocok dengan config, supaya
+    # tidak memuat config milik shell lain yang sintaksnya beda.
+    case "${SHELL:-}" in
+        *bash)
+            if [ "$CONFIG_PATH" = "$HOME_DIR/.bashrc" ]; then
+                . "$CONFIG_PATH" 2>/dev/null || true
+                say "~/.bashrc di-source — 'mengploy' siap dipakai sekarang"
+            fi
+            ;;
+        *zsh)
+            if [ "$CONFIG_PATH" = "$HOME_DIR/.zshrc" ]; then
+                . "$CONFIG_PATH" 2>/dev/null || true
+                say "~/.zshrc di-source — 'mengploy' siap dipakai sekarang"
+            fi
+            ;;
+    esac
+}
+
 need_command() {
     command -v "$1" >/dev/null 2>&1 || fail "perintah '$1' diperlukan tetapi tidak ditemukan"
 }
@@ -124,7 +173,11 @@ else
 fi
 
 say "berhasil memasang $INSTALL_DIR/$BINARY_NAME ($VERSION)"
-case ":${PATH:-}:" in
-    *:"$INSTALL_DIR":*) ;;
-    *) say "tambahkan $INSTALL_DIR ke PATH jika perintah 'mengploy' belum ditemukan" ;;
-esac
+update_shell_path
+
+# Jalankan ulang pemasangan (upgrade) atau pemasangan baru selesai.
+if command -v "$BINARY_NAME" >/dev/null 2>&1; then
+    say "perintah 'mengploy' tersedia di sesi shell ini"
+else
+    say "buka terminal baru atau jalankan 'source $CONFIG_PATH' untuk memakai 'mengploy' sekarang"
+fi
