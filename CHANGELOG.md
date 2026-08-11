@@ -6,6 +6,23 @@ Versioning.
 
 ## [Unreleased]
 
+- (kosong — tidak ada perubahan yang belum dirilis)
+
+## [0.1.2] - 2026-08-11
+
+### Ditambahkan
+
+- **Tombol Hapus Server di halaman Detail Server.** `POST /servers/{id}/hapus`
+  menghapus server beserta seluruh data terkait (app, deployment, log, metrik,
+  alert, tautan registry, lock fleet) dalam satu transaksi, dengan konfirmasi
+  browser sebelum submit. Id tidak dikenal → 404; hanya bisa lewat form POST
+  ber-CSRF, tidak ada route GET yang menghapus.
+- **Panduan langkah menyiapkan akses SSH di wizard Tambah Server.** Tiga
+  langkah: buat pasangan kunci (`ssh-keygen`), daftarkan kunci PUBLIK ke
+  `~/.ssh/authorized_keys` server target (`ssh-copy-id`), lalu tempel kunci
+  PRIVAT ke form — termasuk peringatan bahwa server hanya menerima kunci
+  publik di `authorized_keys`, bukan kunci privat.
+
 ### Diperbaiki
 
 - **Private key SSH valid ditolak server saat verifikasi.** Penyimpanan kunci
