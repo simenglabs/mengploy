@@ -58,16 +58,8 @@ OS=$(uname -s)
 ARCH=$(uname -m)
 case "$OS:$ARCH" in
     Linux:x86_64|Linux:amd64) TARGET="x86_64-unknown-linux-gnu" ;;
-    Linux:arm64|Linux:aarch64) TARGET="aarch64-unknown-linux-gnu" ;;
-    Darwin:x86_64|Darwin:amd64) TARGET="x86_64-apple-darwin" ;;
     Darwin:arm64|Darwin:aarch64) TARGET="aarch64-apple-darwin" ;;
-    *) fail "platform tidak didukung: $OS/$ARCH (target: Linux x86_64/aarch64, macOS x86_64/arm64)" ;;
- esac
-
-case "$OS" in
-    Linux)
-        if [ "$ARCH" = "aarch64" ]; then TARGET="aarch64-unknown-linux-gnu"; fi
-        ;;
+    *) fail "platform tidak didukung: $OS/$ARCH (release tersedia untuk Linux x86_64 dan macOS arm64/M1)" ;;
 esac
 
 if [ -z "$INSTALL_DIR" ]; then

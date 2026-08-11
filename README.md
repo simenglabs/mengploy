@@ -35,7 +35,7 @@ Perilaku installer:
 
 1. Meminta konfirmasi sebelum mengubah sistem.
 2. Mengambil release stabil terbaru dari GitHub.
-3. Memilih Linux x86_64, macOS x86_64, atau macOS Apple Silicon.
+3. Memilih binary sesuai platform: Linux x86_64 atau macOS Apple Silicon (M1/M2+).
 4. Memverifikasi `checksums.txt` sebelum executable dipasang.
 5. Memasang ke `/usr/local/bin` bila dapat ditulis; kalau tidak, memakai
    `~/.local/bin` tanpa meminta Rust atau package manager.
@@ -146,7 +146,7 @@ rm -f .sqlx-dev.db
   pada setiap push serta pull request.
 - `.github/workflows/release.yml` membangun release ketika tag `v*` dipush,
   lalu membuat GitHub Release berisi archive dan `checksums.txt`.
-- Target release saat ini: Linux x86_64, macOS x86_64, dan macOS Apple Silicon.
+- Target release saat ini: Linux x86_64 dan macOS Apple Silicon (arm64/M1+).
 - Release memaketkan executable sebagai `mengploy`, sehingga instalasi runtime
   tidak membutuhkan Rust.
 
