@@ -4,7 +4,7 @@ Semua perubahan penting pada **mengploy** dicatat di sini.
 Format mengikuti prinsip Keep a Changelog dan versi release memakai Semantic
 Versioning.
 
-## [Unreleased]
+## [0.1.3] - 2026-08-11
 
 ### Diperbaiki
 
