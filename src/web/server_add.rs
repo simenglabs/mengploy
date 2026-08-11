@@ -20,6 +20,7 @@ pub fn render_server_baru(csrf_token: &str, error: Option<&str>, strip: Option<M
         @if let Some(pesan) = error {
             div.alert.alert-danger { (pesan) }
         }
+        (panel_panduan_ssh())
         form.form-panel method="post" action="/servers" {
             input type="hidden" name="csrf_token" value=(csrf_token);
             div.field {
@@ -73,6 +74,59 @@ pub fn render_server_baru(csrf_token: &str, error: Option<&str>, strip: Option<M
         "Tambah Server Baru - Mengploy",
         app_shell(Some(csrf_token), strip, content),
     )
+}
+
+/// Panduan langkah demi langkah menyiapkan akses SSH sebelum mengisi form —
+/// penjelasan mengapa public key harus ada di `authorized_keys` server
+/// (kesalahan paling umum saat verifikasi: kunci privat valid ditolak karena
+/// public key pasangannya belum terdaftar). Perintah yang dipakai `code`
+/// memakai komentar `# komentar` yang dibungkus `<code>` saja, bukan blok
+/// `<pre>` besar, supaya tetap ringkas di layar.
+fn panel_panduan_ssh() -> Markup {
+    html! {
+        section.guide-panel aria-labelledby="judul-panduan" {
+            h2 id="judul-panduan" { "Cara Menyiapkan Akses SSH" }
+            ol.guide-list {
+                li {
+                    strong { "1. Buat pasangan kunci (sekali saja)." }
+                    p {
+                        "Di terminal lokal Anda, jalankan: "
+                        code { "ssh-keygen -t ed25519 -f mengploy_key -N ''" }
+                    }
+                    p.field-hint {
+                        "Hasilnya dua file: " code { "mengploy_key" } " (PRIVAT, rahasia) dan "
+                        code { "mengploy_key.pub" } " (PUBLIK, boleh disebar)."
+                    }
+                }
+                li {
+                    strong { "2. Daftarkan kunci PUBLIK di server target." }
+                    p {
+                        "Login sekali ke server Anda lalu tempel isi " code { "mengploy_key.pub" }
+                        " ke file " code { "~/.ssh/authorized_keys" } " (untuk user SSH yang sama dengan "
+                        "kolom Pengguna SSH di bawah). Cara cepat:"
+                    }
+                    p {
+                        code { "ssh-copy-id -i ~/.ssh/mengploy_key.pub user@alamat-server" }
+                    }
+                    div.alert.alert-warning {
+                        strong { "Mengapa wajib? " }
+                        "Server hanya mengizinkan login dengan kunci yang PUBLIK-nya terdaftar di "
+                        code { "~/.ssh/authorized_keys" } ". Jangan pernah menaruh kunci privat "
+                        "di server — file itu hanya menerima kunci publik."
+                    }
+                }
+                li {
+                    strong { "3. Tempel kunci PRIVAT ke form di bawah." }
+                    p {
+                        "Salin seluruh isi " code { "mengploy_key" } " (dimulai "
+                        code { "-----BEGIN OPENSSH PRIVATE KEY-----" } ") ke kolom "
+                        "\"Kunci Privat SSH\". Isi nama, alamat, dan user SSH server target, "
+                        "lalu lanjutkan."
+                    }
+                }
+            }
+        }
+    }
 }
 
 // ============================================================
@@ -264,6 +318,16 @@ mod tests {
         // Tidak ada `name=` — memastikan field bantuan ini TIDAK PERNAH
         // ikut ter-submit sebagai bagian `ServerBaruForm`.
         assert!(!markup.contains(r#"id="ssh_keygen_cmd" name"#));
+    }
+
+    #[test]
+    fn server_baru_menampilkan_panduan_langkah_ssh_dan_authorized_keys() {
+        let markup = render_server_baru("token", None, None).into_string();
+        assert!(markup.contains("Cara Menyiapkan Akses SSH"));
+        assert!(markup.contains("authorized_keys"));
+        assert!(markup.contains("ssh-copy-id"));
+        assert!(markup.contains("mengploy_key.pub"));
+        assert!(markup.contains("Jangan pernah menaruh kunci privat"));
     }
 
     #[test]

@@ -444,6 +444,141 @@ pub async fn apply_poll_batch(
     Ok(())
 }
 
+/// Hapus server beserta seluruh data terkait dalam SATU transaksi
+/// (invariant 10). Penghapusan ditulis manual berjenjang (anak paling dalam
+/// dulu) karena `PRAGMA foreign_keys` aplikasi nonaktif — `ON DELETE
+/// CASCADE` di skema tidak akan berjalan dengan sendirinya. Tabel yang
+/// menyimpan app milik server (`deployments`, `env_vars`, `domains`, dsb)
+/// harus dibersihkan SEBELUM `apps` dihapus; tabel yang menyimpan `server_id`
+/// langsung bisa dihapus kapan saja sebelum baris `servers`.
+pub async fn hapus(pool: &SqlitePool, id: &str) -> Result<()> {
+    let mut tx = pool.begin().await.context("mulai transaksi hapus server")?;
+
+    // ── data milik app server ini (hapus paling dalam dulu) ──
+    sqlx::query!(
+        "DELETE FROM deployment_logs
+         WHERE deployment_id IN (
+             SELECT d.id FROM deployments d
+             JOIN apps a ON a.id = d.app_id
+             WHERE a.server_id = ?
+         )",
+        id
+    )
+    .execute(&mut *tx)
+    .await
+    .context("hapus log deployment milik server")?;
+
+    sqlx::query!(
+        "DELETE FROM deployments WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+        id
+    )
+    .execute(&mut *tx)
+    .await
+    .context("hapus deployment milik server")?;
+
+    sqlx::query!(
+        "DELETE FROM env_vars WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+        id
+    )
+    .execute(&mut *tx)
+    .await
+    .context("hapus env var milik server")?;
+
+    sqlx::query!(
+        "DELETE FROM domains WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+        id
+    )
+    .execute(&mut *tx)
+    .await
+    .context("hapus domain milik server")?;
+
+    sqlx::query!(
+        "DELETE FROM deploy_tokens WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+        id
+    )
+    .execute(&mut *tx)
+    .await
+    .context("hapus token deploy milik server")?;
+
+    sqlx::query!(
+        "DELETE FROM notification_deliveries WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+        id
+    )
+    .execute(&mut *tx)
+    .await
+    .context("hapus pengiriman notifikasi milik server")?;
+
+    sqlx::query!(
+        "DELETE FROM reconciliation_findings WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+        id
+    )
+    .execute(&mut *tx)
+    .await
+    .context("hapus temuan rekonsiliasi milik server")?;
+
+    // `metrics_container_legacy` tidak punya `server_id` — cuma `app_id`,
+    // jadi ikut dibersihkan lewat daftar app server ini (sebelum `apps` hilang).
+    sqlx::query!(
+        "DELETE FROM metrics_container_legacy WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+        id
+    )
+    .execute(&mut *tx)
+    .await
+    .context("hapus metrik container legacy milik server")?;
+
+    sqlx::query!("DELETE FROM apps WHERE server_id = ?", id)
+        .execute(&mut *tx)
+        .await
+        .context("hapus app milik server")?;
+
+    // ── data yang menyimpan `server_id` langsung ──
+    sqlx::query!("DELETE FROM server_registries WHERE server_id = ?", id)
+        .execute(&mut *tx)
+        .await
+        .context("hapus tautan registry server")?;
+
+    sqlx::query!("DELETE FROM fleet_server_locks WHERE server_id = ?", id)
+        .execute(&mut *tx)
+        .await
+        .context("hapus lock fleet server")?;
+
+    sqlx::query!(
+        "DELETE FROM fleet_operation_results WHERE server_id = ?",
+        id
+    )
+    .execute(&mut *tx)
+    .await
+    .context("hapus hasil operasi fleet server")?;
+
+    sqlx::query!("DELETE FROM metric_alerts WHERE server_id = ?", id)
+        .execute(&mut *tx)
+        .await
+        .context("hapus alert metrik server")?;
+
+    sqlx::query!("DELETE FROM metrics_host WHERE server_id = ?", id)
+        .execute(&mut *tx)
+        .await
+        .context("hapus metrik host server")?;
+
+    sqlx::query!("DELETE FROM metrics_container WHERE server_id = ?", id)
+        .execute(&mut *tx)
+        .await
+        .context("hapus metrik container server")?;
+
+    sqlx::query!("DELETE FROM metrics_host_legacy WHERE server_id = ?", id)
+        .execute(&mut *tx)
+        .await
+        .context("hapus metrik host legacy server")?;
+
+    sqlx::query!("DELETE FROM servers WHERE id = ?", id)
+        .execute(&mut *tx)
+        .await
+        .context("hapus server")?;
+
+    tx.commit().await.context("commit transaksi hapus server")?;
+    Ok(())
+}
+
 /// Batas `CHECK (length(last_error_message) <= 500)` di skema — dipotong
 /// di sini supaya pemanggil tidak perlu tahu detail constraint db.
 fn truncate_error_message(message: &str) -> String {

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM domains WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "60c95c0811d726ef139c92b862bc00003aadb4d172951f807696b464876c5407"
+}

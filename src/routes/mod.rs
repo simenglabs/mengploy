@@ -40,6 +40,7 @@ pub fn build_router(state: AppState) -> Router {
         )
         .route("/servers/baru", get(servers::server_baru_form))
         .route("/servers/{id}", get(servers::detail))
+        .route("/servers/{id}/hapus", post(servers::hapus_submit))
         .route("/fleet", get(fleet::halaman))
         .route("/fleet/command", post(fleet::command_submit))
         .route("/fleet/prune", post(fleet::prune_submit))

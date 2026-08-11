@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM deployment_logs\n         WHERE deployment_id IN (\n             SELECT d.id FROM deployments d\n             JOIN apps a ON a.id = d.app_id\n             WHERE a.server_id = ?\n         )",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "9f9ca021cd1c91bb50df51b58454ef9da736acf9dcde85036a338247e6eddbdf"
+}

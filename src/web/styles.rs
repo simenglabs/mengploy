@@ -575,9 +575,69 @@ code {
   background-color: transparent;
 }
 
+/* Tombol destruktif (mis. Hapus Server) — warna bahaya, konsisten dengan
+   `.error-box.danger`/`.alert-danger`. */
+.btn-danger {
+  background-color: transparent;
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.btn-danger:hover {
+  background-color: var(--color-danger);
+  color: var(--color-bg-page);
+}
+
 a.btn {
   display: inline-block;
   text-decoration: none;
+}
+
+/* --- Panduan menyiapkan SSH (wizard tambah server) --- */
+
+.guide-panel {
+  max-width: 40rem;
+  border: 1px solid var(--color-border);
+  padding: 1.25rem 2rem;
+  margin-bottom: 1.5rem;
+  background-color: var(--color-bg-input);
+}
+
+.guide-panel h2 {
+  margin-top: 0;
+  font-size: 1.05rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.5rem;
+}
+
+.guide-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.guide-list li {
+  margin-bottom: 1rem;
+}
+
+.guide-list strong {
+  color: var(--color-text-main);
+}
+
+.guide-list p {
+  margin: 0.4rem 0 0;
+}
+
+/* Zona berbahaya di detail server */
+.danger-zone {
+  border-color: var(--color-danger);
+}
+
+.danger-zone h2 {
+  color: var(--color-danger);
+}
+
+.danger-note {
+  color: var(--color-text-muted);
 }
 
 /* --- Detail server --- */

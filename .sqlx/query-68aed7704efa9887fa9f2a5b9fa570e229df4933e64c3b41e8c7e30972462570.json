@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM metrics_container_legacy WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "68aed7704efa9887fa9f2a5b9fa570e229df4933e64c3b41e8c7e30972462570"
+}

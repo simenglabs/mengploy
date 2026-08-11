@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM reconciliation_findings WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "bbded93e3319dc2ccfc4abd38a6f22d15a45dcf80b5c017815ace47c63387dcf"
+}

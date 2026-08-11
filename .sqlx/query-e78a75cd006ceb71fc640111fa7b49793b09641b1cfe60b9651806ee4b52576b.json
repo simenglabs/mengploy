@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM deploy_tokens WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "e78a75cd006ceb71fc640111fa7b49793b09641b1cfe60b9651806ee4b52576b"
+}

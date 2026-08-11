@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM metrics_host_legacy WHERE server_id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "0f9391e9d6bec11ee10350f4a0b35afce4f80adb6d069c469b843fdfedfddbf1"
+}

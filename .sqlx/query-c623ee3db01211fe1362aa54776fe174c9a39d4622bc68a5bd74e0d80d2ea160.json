@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM notification_deliveries WHERE app_id IN (SELECT id FROM apps WHERE server_id = ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "c623ee3db01211fe1362aa54776fe174c9a39d4622bc68a5bd74e0d80d2ea160"
+}

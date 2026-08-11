@@ -57,11 +57,32 @@ pub fn render_server_detail(
             }
         }
         (panel_metrik(metrics, range_hours, &server.id))
+        (panel_hapus(server, csrf_token))
     };
     base_page(
         &format!("Detail Server {} - Mengploy", server.name),
         app_shell(Some(csrf_token), strip, content),
     )
+}
+
+/// Panel zona berbahaya — hapus server beserta seluruh data terkait.
+/// Form POST dengan CSRF; konfirmasi browser (`confirm`) sebelum submit
+/// supaya penghapusan tidak pernah terjadi tanpa disengaja. Tidak ada
+/// route GET yang menghapus apa pun.
+fn panel_hapus(server: &ServerRingkas, csrf_token: &str) -> Markup {
+    html! {
+        section.detail-card.danger-zone aria-labelledby="judul-hapus" {
+            h2 id="judul-hapus" { "Hapus Server" }
+            p.danger-note {
+                "Menghapus server akan ikut menghapus seluruh aplikasi, deployment, log, "
+                "metrik, dan tautan registry yang terkait. Tindakan ini tidak dapat dibatalkan."
+            }
+            form method="post" action=(format!("/servers/{}/hapus", server.id)) onsubmit=(r#"return confirm('Yakin ingin menghapus server ini beserta semua datanya?');"#) {
+                input type="hidden" name="csrf_token" value=(csrf_token);
+                button.btn.btn-danger type="submit" { "Hapus Server Ini" }
+            }
+        }
+    }
 }
 
 fn panel_metrik(metrics: &MetricDashboard, range_hours: u32, server_id: &str) -> Markup {
@@ -414,6 +435,27 @@ mod tests {
         .into_string();
         assert!(markup.contains("Gagal terhubung ke host target."));
         assert!(markup.contains(r#"action="/servers/srv-1/verifikasi/ulang"#));
+    }
+    #[test]
+    fn detail_menampilkan_panel_hapus_dengan_form_post_dan_csrf() {
+        let markup = render_server_detail(
+            &server(StatusServer::Online),
+            &[],
+            &MetricDashboard::default(),
+            6,
+            "tok",
+            None,
+        )
+        .into_string();
+        assert!(markup.contains("Hapus Server"));
+        assert!(markup.contains(r#"action="/servers/srv-1/hapus""#));
+        assert!(markup.contains(r#"method="post""#));
+        assert!(markup.contains(r#"name="csrf_token" value="tok""#));
+        assert!(markup.contains("btn-danger"));
+        assert!(
+            markup.contains("confirm("),
+            "harus ada konfirmasi sebelum hapus"
+        );
     }
     #[test]
     fn detail_tanpa_private_key_tidak_pernah_muncul() {

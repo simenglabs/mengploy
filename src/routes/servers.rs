@@ -284,36 +284,42 @@ pub async fn konfirmasi_hostkey(
     }
 }
 
-/// `GET /servers/{id}` — detail (kerangka, tanpa grafik).
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn normalisasi_mempertahankan_newline_akhir_saat_ada() {
-        let key = "-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----\n";
-        assert_eq!(normalisasi_ssh_key(key), key);
-    }
-
-    #[test]
-    fn normalisasi_menambahkan_newline_akhir_saat_tidak_ada() {
-        let tanpa_newline =
-            "-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----";
-        let hasil = normalisasi_ssh_key(tanpa_newline);
-        assert!(hasil.ends_with('\n'), "key wajib diakhiri newline");
-        assert_eq!(hasil.trim_end(), tanpa_newline);
-    }
-
-    #[test]
-    fn normalisasi_membuang_whitespace_tepi() {
-        let key =
-            "  \n-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----\n  ";
-        let hasil = normalisasi_ssh_key(key);
-        assert!(hasil.starts_with("-----BEGIN"));
-        assert!(hasil.ends_with('\n'));
-        assert!(!hasil.starts_with(' ') && !hasil.starts_with('\n'));
-    }
+/// `POST /servers/{id}/hapus` — hapus server beserta seluruh data terkait
+/// (app, deployment, log, metrik, tautan registry) dalam satu transaksi,
+/// lalu kembali ke fleet. Tindakan destruktif dijalankan lewat tombol dengan
+/// konfirmasi di halaman detail — tidak ada endpoint GET yang menghapus apa
+/// pun.
+#[derive(Deserialize)]
+pub struct HapusServerForm {
+    csrf_token: String,
 }
+
+pub async fn hapus_submit(
+    State(state): State<AppState>,
+    Extension(session): Extension<Session>,
+    Path(id): Path<String>,
+    Form(form): Form<HapusServerForm>,
+) -> Result<Response, AppError> {
+    if form.csrf_token != session.csrf_token {
+        return Err(AppError::BadRequest(PESAN_CSRF_TIDAK_VALID.to_string()));
+    }
+
+    // Pastikan server benar-benar ada — id tak dikenal → 404, bukan sukses
+    // diam-diam.
+    repo::find_ringkas_by_id(&state.db_read, &id)
+        .await
+        .map_err(AppError::from)?
+        .ok_or_else(not_found)?;
+
+    repo::hapus(&state.db_write, &id)
+        .await
+        .map_err(AppError::from)?;
+
+    state.events.remove(&id);
+
+    Ok(Redirect::to("/servers").into_response())
+}
+
 #[derive(Deserialize)]
 pub struct MetricsQuery {
     /// Rentang dalam jam; dibatasi agar handler tidak membaca histori tanpa batas.
@@ -362,4 +368,34 @@ pub(super) async fn fleet_strip(state: &AppState) -> Result<maud::Markup, AppErr
 
 pub(super) fn not_found() -> AppError {
     AppError::NotFound
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn normalisasi_mempertahankan_newline_akhir_saat_ada() {
+        let key = "-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----\n";
+        assert_eq!(normalisasi_ssh_key(key), key);
+    }
+
+    #[test]
+    fn normalisasi_menambahkan_newline_akhir_saat_tidak_ada() {
+        let tanpa_newline =
+            "-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----";
+        let hasil = normalisasi_ssh_key(tanpa_newline);
+        assert!(hasil.ends_with('\n'), "key wajib diakhiri newline");
+        assert_eq!(hasil.trim_end(), tanpa_newline);
+    }
+
+    #[test]
+    fn normalisasi_membuang_whitespace_tepi() {
+        let key =
+            "  \n-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----\n  ";
+        let hasil = normalisasi_ssh_key(key);
+        assert!(hasil.starts_with("-----BEGIN"));
+        assert!(hasil.ends_with('\n'));
+        assert!(!hasil.starts_with(' ') && !hasil.starts_with('\n'));
+    }
 }
