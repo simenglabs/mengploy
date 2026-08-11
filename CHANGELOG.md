@@ -6,7 +6,19 @@ Versioning.
 
 ## [Unreleased]
 
-- (kosong — tidak ada perubahan yang belum dirilis)
+### Diperbaiki
+
+- **Host key server dilaporkan "berubah" secara palsu sehingga server jadi
+  `unreachable`.** Pemilihan host key memakai baris pertama output
+  `ssh-keyscan` yang berisi beberapa kunci (RSA/ECDSA/ED25519) dengan urutan
+  tidak deterministik antar pemanggilan; saat verifikasi tersimpan fingerprint
+  RSA tetapi polling berikutnya kebetulan mendapat ECDSA, aplikasi menganggap
+  host key berubah padahal server sama. Kini host key dipilih dengan urutan
+  preferensi tetap **ed25519 → ecdsa → rsa** (fallback baris pertama bila
+  ketiganya tidak ada), sehingga fingerprint stabil antar siklus; ditambah 5
+  test unit untuk urutan, kelipatan kunci, dan fallback.
+
+## [0.1.2] - 2026-08-11
 
 ## [0.1.2] - 2026-08-11
 

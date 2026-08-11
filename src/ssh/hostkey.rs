@@ -115,12 +115,44 @@ async fn run_ssh_keyscan(host: &str, port: u16, timeout: Duration) -> Result<Str
         .map_err(|err| HostKeyError::Io(err.to_string()))?;
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let line = stdout
+    let lines: Vec<&str> = stdout
         .lines()
-        .find(|line| !line.trim_start().starts_with('#') && !line.trim().is_empty())
-        .map(str::to_string);
+        .filter(|line| !line.trim_start().starts_with('#') && !line.trim().is_empty())
+        .collect();
 
-    line.ok_or(HostKeyError::Unreachable)
+    let chosen = pilih_baris_host_key(&lines);
+    chosen.map(str::to_string).ok_or(HostKeyError::Unreachable)
+}
+
+/// Pilih baris host key secara DETERMINISTIK dari output `ssh-keyscan`.
+///
+/// `ssh-keyscan` mengembalikan SEMUA host key yang ditawarkan server
+/// (biasanya RSA, ECDSA, dan ED25519) dengan URUTAN YANG TIDAK STABIL antar
+/// eksekusi — memakai baris pertama membuat fingerprint yang dihitung bisa
+/// berubah walau host tidak berubah sama sekali, dan server online akan
+/// dilaporkan palsu `host_key_berubah`. Fungsi murni (dites langsung tanpa
+/// proses): pilih dengan preferensi tetap `ed25519 > ecdsa > rsa`, sisanya
+/// sebagai cadangan terakhir. Fungsi ini konsisten dipakai di verifikasi
+/// (TOFU), konfirmasi ulang, dan polling sehingga fingerprint yang tersimpan
+/// tidak pernah berubah tanpa alasan.
+fn pilih_baris_host_key<'a>(lines: &'a [&'a str]) -> Option<&'a str> {
+    lines.iter().copied().min_by_key(|line| {
+        let key_type = line.split_whitespace().nth(1).unwrap_or("");
+        preferensi_key_type(key_type)
+    })
+}
+
+/// Bobot preferensi jenis host key — makin kecil makin diutamakan.
+/// `ssh-ed25519` modern dan unik; `ecdsa-*` berikutnya; `rsa-*` cadangan
+/// untuk server tua yang tidak punya host key lain.
+fn preferensi_key_type(key_type: &str) -> u8 {
+    match key_type {
+        "ssh-ed25519" => 0,
+        "ecdsa-sha2-nistp256" => 1,
+        "ecdsa-sha2-nistp384" | "ecdsa-sha2-nistp521" => 2,
+        "ssh-rsa" | "rsa-sha2-256" | "rsa-sha2-512" => 3,
+        _ => 4,
+    }
 }
 
 async fn run_ssh_keygen_fingerprint(
@@ -240,6 +272,61 @@ mod tests {
     #[test]
     fn parse_fingerprint_none_untuk_string_kosong() {
         assert_eq!(parse_fingerprint(""), None);
+    }
+
+    #[test]
+    fn pilih_baris_mengutamakan_ed25519_walau_bukan_baris_pertama() {
+        let lines = [
+            "192.168.8.104 ssh-rsa AAAA-RSA",
+            "192.168.8.104 ecdsa-sha2-nistp256 AAAA-ECDSA",
+            "192.168.8.104 ssh-ed25519 AAAA-ED25519",
+        ];
+        assert_eq!(pilih_baris_host_key(&lines), Some(lines[2]));
+    }
+
+    #[test]
+    fn pilih_baris_deterministik_tidak_bergantung_urutan_input() {
+        // Urutan output `ssh-keyscan` bisa acak antar eksekusi — hasil
+        // pilihan WAJIB sama untuk susunan yang berbeda (bug host_key_berubah
+        // palsu berasal dari ketergantungan urutan ini).
+        let urutan_a = [
+            "h ssh-rsa AAAA-RSA",
+            "h ecdsa-sha2-nistp256 AAAA-ECDSA",
+            "h ssh-ed25519 AAAA-ED25519",
+        ];
+        let urutan_b = [
+            "h ecdsa-sha2-nistp256 AAAA-ECDSA",
+            "h ssh-ed25519 AAAA-ED25519",
+            "h ssh-rsa AAAA-RSA",
+        ];
+        assert_eq!(
+            pilih_baris_host_key(&urutan_a),
+            Some("h ssh-ed25519 AAAA-ED25519")
+        );
+        assert_eq!(
+            pilih_baris_host_key(&urutan_b),
+            Some("h ssh-ed25519 AAAA-ED25519")
+        );
+    }
+
+    #[test]
+    fn pilih_baris_jatuh_ke_ecdsa_saat_ed25519_tidak_ada() {
+        let lines = ["h ssh-rsa AAAA-RSA", "h ecdsa-sha2-nistp256 AAAA-ECDSA"];
+        assert_eq!(
+            pilih_baris_host_key(&lines),
+            Some("h ecdsa-sha2-nistp256 AAAA-ECDSA")
+        );
+    }
+
+    #[test]
+    fn pilih_baris_jatuh_ke_rsa_saat_hanya_rsa_yang_tersedia() {
+        let lines = ["h ssh-rsa AAAA-RSA"];
+        assert_eq!(pilih_baris_host_key(&lines), Some("h ssh-rsa AAAA-RSA"));
+    }
+
+    #[test]
+    fn pilih_baris_none_untuk_input_kosong() {
+        assert_eq!(pilih_baris_host_key(&[]), None);
     }
 
     #[test]
