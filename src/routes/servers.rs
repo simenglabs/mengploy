@@ -134,9 +134,17 @@ fn validasi_server_baru(form: &ServerBaruForm) -> Result<(), &'static str> {
 }
 
 /// Buang whitespace tepi dari kunci privat SSH tanpa menghilangkan newline
-/// penutup wajib (`\n` setelah `-----END OPENSSH PRIVATE KEY-----`).
+/// penutup wajib (`\n` setelah `-----END OPENSSH PRIVATE KEY-----`), dan
+/// normalkan line-ending CRLF/CR menjadi LF.
+///
+/// OpenSSH menolak file kunci yang barisnya diakhiri `\r\n` (`invalid
+/// format`) — kunci yang di-paste dari editor Windows/terminal yang
+/// membawa CRLF akan gagal verifikasi dengan `auth_rejected` padahal
+/// public key-nya sudah benar di `authorized_keys`. Normalisasi dilakukan
+/// SEBELUM trim supaya `\r` tidak tersisa di dalam isi.
 fn normalisasi_ssh_key(raw: &str) -> String {
-    let trimmed = raw.trim();
+    let tanpa_cr = raw.replace("\r\n", "\n").replace('\r', "\n");
+    let trimmed = tanpa_cr.trim();
     if trimmed.ends_with('\n') {
         trimmed.to_string()
     } else {
@@ -397,5 +405,41 @@ mod tests {
         assert!(hasil.starts_with("-----BEGIN"));
         assert!(hasil.ends_with('\n'));
         assert!(!hasil.starts_with(' ') && !hasil.starts_with('\n'));
+    }
+
+    #[test]
+    fn normalisasi_mengubah_crlf_menjadi_lf() {
+        let key_crlf =
+            "-----BEGIN OPENSSH PRIVATE KEY-----\r\nisi\r\n-----END OPENSSH PRIVATE KEY-----\r\n";
+        let hasil = normalisasi_ssh_key(key_crlf);
+        assert!(
+            !hasil.contains('\r'),
+            "tidak boleh ada \\r tersisa di kunci"
+        );
+        assert!(hasil.starts_with("-----BEGIN OPENSSH PRIVATE KEY-----\n"));
+        assert!(hasil.contains("\nisi\n"));
+        assert!(hasil.ends_with('\n'));
+    }
+
+    #[test]
+    fn normalisasi_mengubah_cr_klasik_menjadi_lf() {
+        // Line-ending klasik macOS (hanya CR, tanpa LF) juga harus dinormalisasi.
+        let key_cr =
+            "-----BEGIN OPENSSH PRIVATE KEY-----\risi\r-----END OPENSSH PRIVATE KEY-----\r";
+        let hasil = normalisasi_ssh_key(key_cr);
+        assert!(!hasil.contains('\r'));
+        assert!(hasil.contains("\nisi\n"));
+        assert!(hasil.ends_with('\n'));
+    }
+
+    #[test]
+    fn normalisasi_crlf_tidak_mengubah_kunci_lf_yang_sudah_benar() {
+        let key_lf =
+            "-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----\n";
+        let hasil = normalisasi_ssh_key(key_lf);
+        assert_eq!(
+            hasil, key_lf,
+            "kunci LF yang sudah benar tidak boleh berubah"
+        );
     }
 }

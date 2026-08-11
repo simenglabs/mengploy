@@ -8,6 +8,13 @@ Versioning.
 
 ### Diperbaiki
 
+- **Verifikasi server selalu gagal `auth_rejected` saat private key di-paste
+  dengan line-ending CRLF.** OpenSSH menolak file kunci yang barisnya
+  berakhiran `\r\n` (`invalid format`), sehingga kunci yang sebenarnya sudah
+  benar dan terdaftar di `authorized_keys` tetap ditolak. Normalisasi kunci
+  kini mengubah `\r\n` (dan `\r` klasik) menjadi `\n` sebelum trim; ditambah
+  3 test unit (CRLF, CR klasik, dan jaminan kunci LF yang sudah benar tidak
+  berubah).
 - **Host key server dilaporkan "berubah" secara palsu sehingga server jadi
   `unreachable`.** Pemilihan host key memakai baris pertama output
   `ssh-keyscan` yang berisi beberapa kunci (RSA/ECDSA/ED25519) dengan urutan
