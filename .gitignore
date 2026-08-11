@@ -16,10 +16,11 @@ data/
 *.db-shm
 *.db-journal
 
-# Application runtime/log data
-logs/
-runtime/
-run/
+# Application runtime/log data (root-level only — jangan menyentuh
+# src/logs/ yang merupakan modul Rust)
+/logs/
+/runtime/
+/run/
 
 # SQLx preparation scratch; committed .sqlx metadata remains tracked
 .sqlx-prepare-tmp/
