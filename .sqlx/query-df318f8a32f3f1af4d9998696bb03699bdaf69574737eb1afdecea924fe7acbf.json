@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT operation_id FROM fleet_server_locks WHERE server_id = ? AND expires_at > ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "operation_id",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "fleet_server_locks",
+            "name": "operation_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "df318f8a32f3f1af4d9998696bb03699bdaf69574737eb1afdecea924fe7acbf"
+}

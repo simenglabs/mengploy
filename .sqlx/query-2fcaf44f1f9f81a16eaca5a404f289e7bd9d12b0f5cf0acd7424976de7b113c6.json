@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM metrics_container_legacy WHERE res = 'raw' AND ts < ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "2fcaf44f1f9f81a16eaca5a404f289e7bd9d12b0f5cf0acd7424976de7b113c6"
+}

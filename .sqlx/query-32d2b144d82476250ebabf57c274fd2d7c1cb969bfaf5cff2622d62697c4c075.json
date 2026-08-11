@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO deploy_tokens (id, app_id, name, token_hash, created_at)\n         VALUES (?, ?, ?, ?, ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 5
+    },
+    "nullable": []
+  },
+  "hash": "32d2b144d82476250ebabf57c274fd2d7c1cb969bfaf5cff2622d62697c4c075"
+}

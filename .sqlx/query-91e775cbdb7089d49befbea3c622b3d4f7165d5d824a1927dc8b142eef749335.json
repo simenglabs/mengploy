@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT cpu_avg, cpu_max FROM metrics_host\n         WHERE server_id = ? AND res = 'min' LIMIT 1",
+  "describe": {
+    "columns": [
+      {
+        "name": "cpu_avg",
+        "ordinal": 0,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "cpu_avg"
+          }
+        }
+      },
+      {
+        "name": "cpu_max",
+        "ordinal": 1,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "cpu_max"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      true
+    ]
+  },
+  "hash": "91e775cbdb7089d49befbea3c622b3d4f7165d5d824a1927dc8b142eef749335"
+}

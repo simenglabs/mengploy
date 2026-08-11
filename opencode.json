@@ -1,0 +1,70 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "AGENTS.md",
+    "docs/api-contract.md",
+    "docs/plan.md"
+  ],
+  "permission": {
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "lsp": "allow",
+    "todowrite": "allow",
+    "webfetch": "deny",
+    "websearch": "deny",
+    "doom_loop": "deny",
+    "external_directory": {
+      "*": "deny"
+    },
+    "question": "allow",
+    "skill": "allow",
+    "task": "allow",
+    "edit": {
+      "*": "allow",
+      ".sqlx/**": "deny",
+      "Cargo.lock": "deny",
+      "target/**": "deny",
+      ".data/**": "deny",
+      "docs/prd.md": "deny",
+      ".env": "deny",
+      ".env.*": "deny",
+      "**/*.age": "deny",
+      "**/id_rsa*": "deny",
+      "**/id_ed25519*": "deny"
+    },
+    "bash": {
+      "*": "allow",
+      "cargo fmt*": "allow",
+      "cargo check*": "allow",
+      "cargo clippy*": "allow",
+      "cargo test*": "allow",
+      "cargo build*": "allow",
+      "cargo tree*": "allow",
+      "cargo sqlx prepare*": "allow",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git branch*": "allow",
+      "git ls-files*": "allow",
+      "git add*": "deny",
+      "git commit*": "deny",
+      "git push*": "deny",
+      "git reset*": "deny",
+      "git checkout*": "deny",
+      "git rebase*": "deny",
+      "git stash*": "deny",
+      "rm -rf*": "deny",
+      "sudo*": "deny",
+      "curl*": "deny",
+      "wget*": "deny",
+      "ssh*": "deny",
+      "scp*": "deny",
+      "docker*": "deny",
+      "chmod 777*": "deny",
+      "env": "deny",
+      "printenv*": "deny"
+    }
+  }
+}

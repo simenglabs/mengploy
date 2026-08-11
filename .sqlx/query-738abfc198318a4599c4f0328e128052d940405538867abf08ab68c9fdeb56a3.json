@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT next_poll_at FROM servers WHERE id = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "next_poll_at",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "servers",
+            "name": "next_poll_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "738abfc198318a4599c4f0328e128052d940405538867abf08ab68c9fdeb56a3"
+}

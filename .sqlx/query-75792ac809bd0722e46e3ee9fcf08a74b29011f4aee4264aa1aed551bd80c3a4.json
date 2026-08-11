@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO env_vars (id, app_id, key, value_encrypted, is_secret, updated_at)\n         VALUES (?, ?, ?, ?, ?, ?)\n         ON CONFLICT (app_id, key) DO UPDATE SET\n             value_encrypted = excluded.value_encrypted,\n             updated_at = excluded.updated_at",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 6
+    },
+    "nullable": []
+  },
+  "hash": "75792ac809bd0722e46e3ee9fcf08a74b29011f4aee4264aa1aed551bd80c3a4"
+}

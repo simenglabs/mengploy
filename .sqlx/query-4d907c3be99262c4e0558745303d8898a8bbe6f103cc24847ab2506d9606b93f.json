@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO servers (id, name, host, port, ssh_user, ssh_key_encrypted, status, consecutive_failures, created_at, updated_at) VALUES ('srv1', 'srv', 'h', 22, 'u', 'k', 'pending', 0, 0, 0)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": []
+  },
+  "hash": "4d907c3be99262c4e0558745303d8898a8bbe6f103cc24847ab2506d9606b93f"
+}

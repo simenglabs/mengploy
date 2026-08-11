@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO registries (id, host, username, token_encrypted)\n           VALUES (?, ?, ?, ?)\n           ON CONFLICT (host, username) DO UPDATE SET token_encrypted = excluded.token_encrypted\n           RETURNING id as \"id!\"",
+  "describe": {
+    "columns": [
+      {
+        "name": "id!",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "registries",
+            "name": "id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "86a3afebd76463c7be880dd70b773afae1806a232640894c72db005ee65522b2"
+}

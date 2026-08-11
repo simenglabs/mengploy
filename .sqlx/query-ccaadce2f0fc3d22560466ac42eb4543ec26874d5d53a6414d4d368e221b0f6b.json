@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE jobs SET status = 'running', started_at = ?, attempts = ?\n         WHERE id = ? AND status = 'queued'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "ccaadce2f0fc3d22560466ac42eb4543ec26874d5d53a6414d4d368e221b0f6b"
+}

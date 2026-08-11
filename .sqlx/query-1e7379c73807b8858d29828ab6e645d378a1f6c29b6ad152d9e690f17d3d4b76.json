@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO env_versions (id, app_id, version, snapshot_encrypted, note, created_at)\n         VALUES (?, ?, ?, ?, ?, ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 6
+    },
+    "nullable": []
+  },
+  "hash": "1e7379c73807b8858d29828ab6e645d378a1f6c29b6ad152d9e690f17d3d4b76"
+}

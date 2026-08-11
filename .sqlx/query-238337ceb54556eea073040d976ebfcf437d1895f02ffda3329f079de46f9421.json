@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE apps SET lock_expires_at = MAX(lock_expires_at, ?)\n         WHERE id = (SELECT app_id FROM deployments WHERE id = ?)\n           AND lock_token = ?\n           AND lock_expires_at IS NOT NULL\n           AND lock_expires_at > ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "238337ceb54556eea073040d976ebfcf437d1895f02ffda3329f079de46f9421"
+}

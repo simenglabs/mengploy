@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT lock_token FROM apps WHERE id = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "lock_token",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "apps",
+            "name": "lock_token"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "acfb38d8fae72203f83fb1a391b5e3ea8a84431950e47514fe8d0c0c49af84f4"
+}

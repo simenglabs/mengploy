@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT status, resolved_at FROM metric_alerts WHERE server_id = ? AND kind = 'disk_high'",
+  "describe": {
+    "columns": [
+      {
+        "name": "status",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "metric_alerts",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "resolved_at",
+        "ordinal": 1,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metric_alerts",
+            "name": "resolved_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      true
+    ]
+  },
+  "hash": "2e1634dc45480c2e70fbdd6ff7eaaf39d6b373be3e91449e20d386234993cfaa"
+}

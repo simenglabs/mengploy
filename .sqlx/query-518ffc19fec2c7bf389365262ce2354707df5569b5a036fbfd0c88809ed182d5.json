@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE servers\n                     SET status = 'online', docker_version = ?, os_info = ?, last_seen_at = ?,\n                         consecutive_failures = 0, next_poll_at = ?, last_error_kind = NULL,\n                         last_error_message = NULL, updated_at = ?\n                     WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 6
+    },
+    "nullable": []
+  },
+  "hash": "518ffc19fec2c7bf389365262ce2354707df5569b5a036fbfd0c88809ed182d5"
+}

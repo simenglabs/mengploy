@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE deployment_logs SET created_at = ? WHERE deployment_id = 'berjalan'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "4e024b25d76cb01233fdd8f2b03a95e8444ca1ca00781d72db8baf7a12b64f80"
+}

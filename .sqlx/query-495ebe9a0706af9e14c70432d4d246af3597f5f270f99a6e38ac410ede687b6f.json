@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT restart_count FROM metrics_container\n                 WHERE server_id = ? AND container_id = ? AND res = 'raw'\n                 ORDER BY ts DESC LIMIT 1",
+  "describe": {
+    "columns": [
+      {
+        "name": "restart_count",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "restart_count"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "495ebe9a0706af9e14c70432d4d246af3597f5f270f99a6e38ac410ede687b6f"
+}

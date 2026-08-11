@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE notification_deliveries SET next_attempt_at = ? WHERE id = 'delivery-1'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "1884f7d8ca25fc7b92442957adbdee6beb8ac4fc5897a4e8431b06b25ad7ec3a"
+}

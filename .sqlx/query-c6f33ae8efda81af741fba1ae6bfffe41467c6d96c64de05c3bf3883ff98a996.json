@@ -1,0 +1,50 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT key, value_encrypted, is_secret as \"is_secret: bool\"\n           FROM env_vars WHERE app_id = ? ORDER BY key ASC",
+  "describe": {
+    "columns": [
+      {
+        "name": "key",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "env_vars",
+            "name": "key"
+          }
+        }
+      },
+      {
+        "name": "value_encrypted",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "env_vars",
+            "name": "value_encrypted"
+          }
+        }
+      },
+      {
+        "name": "is_secret: bool",
+        "ordinal": 2,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "env_vars",
+            "name": "is_secret"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "c6f33ae8efda81af741fba1ae6bfffe41467c6d96c64de05c3bf3883ff98a996"
+}

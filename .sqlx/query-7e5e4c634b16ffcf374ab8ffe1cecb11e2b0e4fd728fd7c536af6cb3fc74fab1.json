@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO metric_alerts\n             (id, server_id, app_id, container_id, deployment_id, kind, severity, target,\n              message, status, first_seen_at, last_seen_at)\n             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?)\n             ON CONFLICT (server_id, kind, target) DO UPDATE SET\n                app_id = excluded.app_id, container_id = excluded.container_id,\n                deployment_id = excluded.deployment_id, severity = excluded.severity,\n                message = excluded.message, status = 'active', last_seen_at = excluded.last_seen_at,\n                resolved_at = NULL",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 11
+    },
+    "nullable": []
+  },
+  "hash": "7e5e4c634b16ffcf374ab8ffe1cecb11e2b0e4fd728fd7c536af6cb3fc74fab1"
+}

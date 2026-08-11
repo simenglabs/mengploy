@@ -1,0 +1,158 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT ts, server_id, container_id, app_id, cpu_avg, cpu_max, mem_bytes, mem_max,\n                mem_limit, net_rx, net_tx, restart_count\n         FROM metrics_container WHERE server_id = ? AND res = 'min' AND ts >= ?\n         ORDER BY ts ASC",
+  "describe": {
+    "columns": [
+      {
+        "name": "ts",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "ts"
+          }
+        }
+      },
+      {
+        "name": "server_id",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "server_id"
+          }
+        }
+      },
+      {
+        "name": "container_id",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "container_id"
+          }
+        }
+      },
+      {
+        "name": "app_id",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "app_id"
+          }
+        }
+      },
+      {
+        "name": "cpu_avg",
+        "ordinal": 4,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "cpu_avg"
+          }
+        }
+      },
+      {
+        "name": "cpu_max",
+        "ordinal": 5,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "cpu_max"
+          }
+        }
+      },
+      {
+        "name": "mem_bytes",
+        "ordinal": 6,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "mem_bytes"
+          }
+        }
+      },
+      {
+        "name": "mem_max",
+        "ordinal": 7,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "mem_max"
+          }
+        }
+      },
+      {
+        "name": "mem_limit",
+        "ordinal": 8,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "mem_limit"
+          }
+        }
+      },
+      {
+        "name": "net_rx",
+        "ordinal": 9,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "net_rx"
+          }
+        }
+      },
+      {
+        "name": "net_tx",
+        "ordinal": 10,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "net_tx"
+          }
+        }
+      },
+      {
+        "name": "restart_count",
+        "ordinal": 11,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_container",
+            "name": "restart_count"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "01cb4446cdce79be9c40481eeb005daddf0666aea94ad8cb0fbb14c152817174"
+}

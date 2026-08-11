@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE notification_deliveries\n         SET status = 'failed', last_error_kind = ?\n         WHERE id = ? AND status = 'sending'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "748b330ffb75ea3ddbdfbe3f748bbea0bdb2807726ffe6a403d720b1dacaf364"
+}

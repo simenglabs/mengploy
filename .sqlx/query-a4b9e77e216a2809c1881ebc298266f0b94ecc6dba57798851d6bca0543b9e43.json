@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE servers SET status = 'pending', last_error_kind = ?, last_error_message = ?, updated_at = ?\n         WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "a4b9e77e216a2809c1881ebc298266f0b94ecc6dba57798851d6bca0543b9e43"
+}

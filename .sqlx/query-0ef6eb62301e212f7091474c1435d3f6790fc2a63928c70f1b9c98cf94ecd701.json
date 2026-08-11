@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT snapshot_encrypted FROM env_versions WHERE id = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "snapshot_encrypted",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "env_versions",
+            "name": "snapshot_encrypted"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "0ef6eb62301e212f7091474c1435d3f6790fc2a63928c70f1b9c98cf94ecd701"
+}

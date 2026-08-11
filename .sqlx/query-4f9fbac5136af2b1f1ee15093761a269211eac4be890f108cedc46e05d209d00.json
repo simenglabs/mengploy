@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO deployment_logs\n            (deployment_id, path, size_bytes, line_count, truncated, created_at, updated_at)\n         VALUES (?, ?, 0, 0, 0, ?, ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "4f9fbac5136af2b1f1ee15093761a269211eac4be890f108cedc46e05d209d00"
+}

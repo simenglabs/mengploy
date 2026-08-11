@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO server_registries (server_id, registry_id, last_login_at)\n         VALUES (?, ?, ?)\n         ON CONFLICT (server_id, registry_id) DO UPDATE SET last_login_at = excluded.last_login_at",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "f1dd96fd67efd9b2ab8ac29e7600ee9f611433bb6c2defa49dcf9904789859d2"
+}

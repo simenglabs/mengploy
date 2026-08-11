@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT OR REPLACE INTO metrics_host\n             (res, ts, server_id, cpu_avg, cpu_max, mem_used, mem_max, mem_total,\n              load1, disk_used, disk_total, source)\n             VALUES ('raw', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ssh')",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 10
+    },
+    "nullable": []
+  },
+  "hash": "140febdb7fdd3c195d951c1e8355cea970d3ea7d339ad92ebc46e871aeb87558"
+}

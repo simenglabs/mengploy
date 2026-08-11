@@ -1,0 +1,86 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT s.id as \"server_id!\", s.name as \"server_name!\", s.status,\n                  m.disk_used, m.disk_total, m.ts\n           FROM servers s\n           LEFT JOIN metrics_host m ON m.server_id = s.id AND m.res = 'min'\n             AND m.ts = (SELECT MAX(m2.ts) FROM metrics_host m2\n                         WHERE m2.server_id = s.id AND m2.res = 'min')\n           ORDER BY s.name ASC",
+  "describe": {
+    "columns": [
+      {
+        "name": "server_id!",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "servers",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "name": "server_name!",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "servers",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "name": "status",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "servers",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "disk_used",
+        "ordinal": 3,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "disk_used"
+          }
+        }
+      },
+      {
+        "name": "disk_total",
+        "ordinal": 4,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "disk_total"
+          }
+        }
+      },
+      {
+        "name": "ts",
+        "ordinal": 5,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "ts"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      true,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "3dbedd01d934e6a1c012fce0c878ae9c35c74353dbb5a04796ccebdc4858d3ea"
+}

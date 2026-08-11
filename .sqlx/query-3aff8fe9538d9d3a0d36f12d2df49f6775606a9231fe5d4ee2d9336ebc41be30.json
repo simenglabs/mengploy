@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT OR REPLACE INTO fleet_operation_results\n         (operation_id, server_id, exit_code, output_path, status)\n         VALUES (?, ?, ?, ?, ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 5
+    },
+    "nullable": []
+  },
+  "hash": "3aff8fe9538d9d3a0d36f12d2df49f6775606a9231fe5d4ee2d9336ebc41be30"
+}

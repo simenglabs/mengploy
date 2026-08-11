@@ -1,0 +1,110 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT ts, cpu_avg, cpu_max, mem_used, mem_total, load1, disk_used, disk_total\n         FROM metrics_host WHERE server_id = ? AND res = 'min' AND ts >= ? ORDER BY ts ASC",
+  "describe": {
+    "columns": [
+      {
+        "name": "ts",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "ts"
+          }
+        }
+      },
+      {
+        "name": "cpu_avg",
+        "ordinal": 1,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "cpu_avg"
+          }
+        }
+      },
+      {
+        "name": "cpu_max",
+        "ordinal": 2,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "cpu_max"
+          }
+        }
+      },
+      {
+        "name": "mem_used",
+        "ordinal": 3,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "mem_used"
+          }
+        }
+      },
+      {
+        "name": "mem_total",
+        "ordinal": 4,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "mem_total"
+          }
+        }
+      },
+      {
+        "name": "load1",
+        "ordinal": 5,
+        "type_info": "Float",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "load1"
+          }
+        }
+      },
+      {
+        "name": "disk_used",
+        "ordinal": 6,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "disk_used"
+          }
+        }
+      },
+      {
+        "name": "disk_total",
+        "ordinal": 7,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "metrics_host",
+            "name": "disk_total"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "115284aa43593d0f70cf13879db6aa4e2a98dc81609ba89bbbd995be4086db00"
+}

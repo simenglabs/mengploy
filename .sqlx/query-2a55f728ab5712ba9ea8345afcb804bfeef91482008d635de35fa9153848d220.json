@@ -1,0 +1,98 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT deployment_id AS \"deployment_id!\", path, size_bytes, line_count,\n                  truncated, created_at, updated_at\n             FROM deployment_logs\n            WHERE deployment_id = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "deployment_id!",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "deployment_logs",
+            "name": "deployment_id"
+          }
+        }
+      },
+      {
+        "name": "path",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "deployment_logs",
+            "name": "path"
+          }
+        }
+      },
+      {
+        "name": "size_bytes",
+        "ordinal": 2,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "deployment_logs",
+            "name": "size_bytes"
+          }
+        }
+      },
+      {
+        "name": "line_count",
+        "ordinal": 3,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "deployment_logs",
+            "name": "line_count"
+          }
+        }
+      },
+      {
+        "name": "truncated",
+        "ordinal": 4,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "deployment_logs",
+            "name": "truncated"
+          }
+        }
+      },
+      {
+        "name": "created_at",
+        "ordinal": 5,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "deployment_logs",
+            "name": "created_at"
+          }
+        }
+      },
+      {
+        "name": "updated_at",
+        "ordinal": 6,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "deployment_logs",
+            "name": "updated_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "2a55f728ab5712ba9ea8345afcb804bfeef91482008d635de35fa9153848d220"
+}

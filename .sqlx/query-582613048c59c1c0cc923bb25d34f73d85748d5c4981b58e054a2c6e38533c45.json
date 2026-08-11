@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT OR IGNORE INTO servers (id, name, host, port, ssh_user, ssh_key_encrypted, status, consecutive_failures, created_at, updated_at) VALUES ('srv1', 'srv', 'h', 22, 'u', 'k', 'pending', 0, 0, 0)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": []
+  },
+  "hash": "582613048c59c1c0cc923bb25d34f73d85748d5c4981b58e054a2c6e38533c45"
+}

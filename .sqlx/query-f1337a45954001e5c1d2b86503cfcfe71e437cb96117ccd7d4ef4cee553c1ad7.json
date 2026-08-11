@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE deployments\n         SET status = ?, heartbeat_at = ?, started_at = COALESCE(started_at, ?)\n         WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "f1337a45954001e5c1d2b86503cfcfe71e437cb96117ccd7d4ef4cee553c1ad7"
+}

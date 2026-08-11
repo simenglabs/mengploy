@@ -1,0 +1,74 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT operation_id, server_id, exit_code, output_path, status\n           FROM fleet_operation_results WHERE operation_id = ? ORDER BY server_id ASC",
+  "describe": {
+    "columns": [
+      {
+        "name": "operation_id",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "fleet_operation_results",
+            "name": "operation_id"
+          }
+        }
+      },
+      {
+        "name": "server_id",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "fleet_operation_results",
+            "name": "server_id"
+          }
+        }
+      },
+      {
+        "name": "exit_code",
+        "ordinal": 2,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "fleet_operation_results",
+            "name": "exit_code"
+          }
+        }
+      },
+      {
+        "name": "output_path",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "fleet_operation_results",
+            "name": "output_path"
+          }
+        }
+      },
+      {
+        "name": "status",
+        "ordinal": 4,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "fleet_operation_results",
+            "name": "status"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false
+    ]
+  },
+  "hash": "c31e77fb1d7a91dc049431a0aaf7e8d536b9676f0d32664b013d5dfcb4d33181"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE fleet_server_locks SET expires_at = ?\n         WHERE server_id = ? AND operation_id = ? AND expires_at > ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "6624e5c38c4b29b3fc0b277e23f026777d3322005bc843a1d9c792775cbee224"
+}

@@ -1,0 +1,28 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT AVG(cpu_avg) as cpu_avg, AVG(mem_bytes) as mem_bytes\n         FROM metrics_container\n         WHERE app_id = ? AND res = 'raw' AND ts >= ? AND ts < ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "cpu_avg",
+        "ordinal": 0,
+        "type_info": "Float",
+        "origin": "Expression"
+      },
+      {
+        "name": "mem_bytes",
+        "ordinal": 1,
+        "type_info": "Integer",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": [
+      true,
+      true
+    ]
+  },
+  "hash": "a075e127241f7a191593ba70650f7aef53dc6a48723bf03dc79aa98f31011977"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO fleet_operations (id, kind, targets, status, created_at, payload_json)\n         VALUES (?, ?, ?, 'queued', ?, ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 5
+    },
+    "nullable": []
+  },
+  "hash": "bdb4db32d25440f03aee5ba51f3e10b50b47d642c231ccf9bb8a80a8c8c83271"
+}

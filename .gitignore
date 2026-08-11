@@ -1,0 +1,47 @@
+/target/
+
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+*.age
+key.age
+*.pem
+*.key
+
+# Runtime databases and SQLite sidecars
+data/
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+
+# Application runtime/log data
+logs/
+runtime/
+run/
+
+# SQLx preparation scratch; committed .sqlx metadata remains tracked
+.sqlx-prepare-tmp/
+
+# Release/build artifacts
+release/
+dist/
+*.tar.gz
+*.tar.gz.sha256
+checksums.txt
+
+# Local tooling and OS/editor noise
+.DS_Store
+.idea/
+.vscode/
+.commandcode/
+.rtk/
+*.swp
+*.swo
+
+# Temporary project validation output
+.phase7-*.db
+.sqlx-dev.db
+.tmp_*
+test_out.txt

@@ -1,0 +1,122 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT id as \"id!\", app_id, server_id, deployment_id, kind, severity,\n                  status, first_seen_at, last_seen_at\n           FROM reconciliation_findings\n           WHERE app_id = ? AND status IN ('open', 'acknowledged')\n           ORDER BY last_seen_at DESC",
+  "describe": {
+    "columns": [
+      {
+        "name": "id!",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "reconciliation_findings",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "name": "app_id",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "reconciliation_findings",
+            "name": "app_id"
+          }
+        }
+      },
+      {
+        "name": "server_id",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "reconciliation_findings",
+            "name": "server_id"
+          }
+        }
+      },
+      {
+        "name": "deployment_id",
+        "ordinal": 3,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "reconciliation_findings",
+            "name": "deployment_id"
+          }
+        }
+      },
+      {
+        "name": "kind",
+        "ordinal": 4,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "reconciliation_findings",
+            "name": "kind"
+          }
+        }
+      },
+      {
+        "name": "severity",
+        "ordinal": 5,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "reconciliation_findings",
+            "name": "severity"
+          }
+        }
+      },
+      {
+        "name": "status",
+        "ordinal": 6,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "reconciliation_findings",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "first_seen_at",
+        "ordinal": 7,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "reconciliation_findings",
+            "name": "first_seen_at"
+          }
+        }
+      },
+      {
+        "name": "last_seen_at",
+        "ordinal": 8,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "reconciliation_findings",
+            "name": "last_seen_at"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "d9de939a1f2864549c34f84bf296cfbc371fb8c837a48975f474e5bb954ccb97"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE reconciliation_findings\n         SET status = 'resolved', resolved_at = ?\n         WHERE server_id = ? AND status IN ('open', 'acknowledged')\n           AND last_seen_at < ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "32cee0ff9f622122df701f1fe5ca8fdaa088b1e3b62e78f3ae6b0cf2592e2d54"
+}

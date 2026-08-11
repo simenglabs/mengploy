@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE apps SET lock_token = NULL, lock_expires_at = NULL, updated_at = ?\n         WHERE server_id = ? AND lock_token = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "c2224c22f1d72336f6ee2261102da75695c7d0b1781823fa3b1c27b767656fcf"
+}

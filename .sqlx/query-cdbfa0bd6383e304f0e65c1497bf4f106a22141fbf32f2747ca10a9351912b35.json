@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM fleet_server_locks WHERE server_id = ? AND operation_id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "cdbfa0bd6383e304f0e65c1497bf4f106a22141fbf32f2747ca10a9351912b35"
+}

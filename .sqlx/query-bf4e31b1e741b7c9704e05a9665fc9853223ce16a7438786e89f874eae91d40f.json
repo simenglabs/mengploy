@@ -1,0 +1,50 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT dl.deployment_id AS \"deployment_id!\", dl.created_at AS \"created_at!\",\n                  d.status AS \"status_db!\"\n             FROM deployment_logs dl\n             JOIN deployments d ON d.id = dl.deployment_id\n            ORDER BY dl.created_at ASC",
+  "describe": {
+    "columns": [
+      {
+        "name": "deployment_id!",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "deployment_logs",
+            "name": "deployment_id"
+          }
+        }
+      },
+      {
+        "name": "created_at!",
+        "ordinal": 1,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "deployment_logs",
+            "name": "created_at"
+          }
+        }
+      },
+      {
+        "name": "status_db!",
+        "ordinal": 2,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "deployments",
+            "name": "status"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "bf4e31b1e741b7c9704e05a9665fc9853223ce16a7438786e89f874eae91d40f"
+}

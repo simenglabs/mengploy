@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE notification_deliveries\n         SET status = 'queued', next_attempt_at = ?, last_error_kind = ?\n         WHERE id = ? AND status = 'sending'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "87fedabe9f96e2b897ddeeed3a616237d43bd39b74bf02520aaca82757c47147"
+}

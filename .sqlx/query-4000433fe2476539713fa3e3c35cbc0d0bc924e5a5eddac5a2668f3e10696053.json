@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT OR REPLACE INTO metrics_host\n         (res, ts, server_id, cpu_avg, cpu_max, mem_used, mem_max, mem_total, load1,\n          disk_used, disk_total, source)\n         SELECT 'min', (ts / 60) * 60, server_id, AVG(cpu_avg), MAX(cpu_max), AVG(mem_used),\n                MAX(mem_max), MAX(mem_total), AVG(load1), AVG(disk_used), MAX(disk_total), 'rollup'\n         FROM metrics_host WHERE res = 'raw' GROUP BY (ts / 60), server_id",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": []
+  },
+  "hash": "4000433fe2476539713fa3e3c35cbc0d0bc924e5a5eddac5a2668f3e10696053"
+}

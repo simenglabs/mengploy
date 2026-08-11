@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE servers\n                     SET status = ?, consecutive_failures = ?, next_poll_at = ?,\n                         last_error_kind = ?, last_error_message = ?, updated_at = ?\n                     WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 7
+    },
+    "nullable": []
+  },
+  "hash": "0b894a89d6ae9e534adeebab75c701dd9d5a11114749e89209d05a58d4a67b69"
+}

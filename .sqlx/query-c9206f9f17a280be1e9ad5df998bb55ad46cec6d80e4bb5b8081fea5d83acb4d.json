@@ -1,0 +1,35 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT\n            (SELECT COUNT(*) FROM metrics_host WHERE server_id = ?) as host_count,\n            (SELECT COUNT(*) FROM metrics_container WHERE server_id = ?) as container_count,\n            (SELECT COUNT(*) FROM metric_alerts WHERE server_id = ?) as alert_count",
+  "describe": {
+    "columns": [
+      {
+        "name": "host_count",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": "Expression"
+      },
+      {
+        "name": "container_count",
+        "ordinal": 1,
+        "type_info": "Integer",
+        "origin": "Expression"
+      },
+      {
+        "name": "alert_count",
+        "ordinal": 2,
+        "type_info": "Integer",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "c9206f9f17a280be1e9ad5df998bb55ad46cec6d80e4bb5b8081fea5d83acb4d"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT OR REPLACE INTO metrics_container\n         (res, ts, server_id, container_id, app_id, cpu_avg, cpu_max, mem_bytes, mem_max,\n          mem_limit, net_rx, net_tx, restart_count, source)\n         SELECT 'min', (ts / 60) * 60, server_id, container_id, MAX(app_id), AVG(cpu_avg),\n                MAX(cpu_max), AVG(mem_bytes), MAX(mem_max), MAX(mem_limit), MAX(net_rx),\n                MAX(net_tx), MAX(restart_count), 'rollup'\n         FROM metrics_container WHERE res = 'raw'\n         GROUP BY (ts / 60), server_id, container_id",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": []
+  },
+  "hash": "7ec8fc0ff226cc1b8329436146022076ba22e8085171c4b2406b15c3788003fc"
+}

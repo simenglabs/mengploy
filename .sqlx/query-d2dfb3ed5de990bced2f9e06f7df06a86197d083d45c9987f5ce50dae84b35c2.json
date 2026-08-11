@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE deployment_logs\n            SET size_bytes = ?, line_count = ?, truncated = ?, updated_at = ?\n          WHERE deployment_id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 5
+    },
+    "nullable": []
+  },
+  "hash": "d2dfb3ed5de990bced2f9e06f7df06a86197d083d45c9987f5ce50dae84b35c2"
+}

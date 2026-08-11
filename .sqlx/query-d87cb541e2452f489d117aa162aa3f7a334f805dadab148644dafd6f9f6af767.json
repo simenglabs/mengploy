@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE metric_alerts SET status = 'resolved', resolved_at = ?\n             WHERE server_id = ? AND status = 'active' AND last_seen_at < ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "d87cb541e2452f489d117aa162aa3f7a334f805dadab148644dafd6f9f6af767"
+}

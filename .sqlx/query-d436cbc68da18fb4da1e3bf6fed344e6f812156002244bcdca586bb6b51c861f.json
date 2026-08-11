@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE reconciliation_findings\n         SET status = 'acknowledged', acknowledged_at = ?\n         WHERE id = ? AND app_id = ? AND status = 'open'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "d436cbc68da18fb4da1e3bf6fed344e6f812156002244bcdca586bb6b51c861f"
+}

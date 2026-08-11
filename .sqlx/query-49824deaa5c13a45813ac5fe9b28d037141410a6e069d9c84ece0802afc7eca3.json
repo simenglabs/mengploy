@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT status, last_error_kind FROM notification_deliveries WHERE id = 'delivery-1'",
+  "describe": {
+    "columns": [
+      {
+        "name": "status",
+        "ordinal": 0,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "notification_deliveries",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "name": "last_error_kind",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "notification_deliveries",
+            "name": "last_error_kind"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      true
+    ]
+  },
+  "hash": "49824deaa5c13a45813ac5fe9b28d037141410a6e069d9c84ece0802afc7eca3"
+}

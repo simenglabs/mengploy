@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE servers SET host_key_fingerprint = ?, updated_at = ? WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "947d54bbc1fcc9cd46db01b9e867d3739353c6dc84073b68f8cb3aaa3bb07c6d"
+}

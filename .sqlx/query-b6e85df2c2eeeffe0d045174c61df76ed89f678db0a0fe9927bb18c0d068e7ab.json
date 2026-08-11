@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO notification_deliveries\n            (id, event_id, event_type, app_id, payload_json, status, attempts,\n             next_attempt_at, created_at)\n         VALUES (?, ?, ?, ?, ?, 'queued', 0, ?, ?)\n         ON CONFLICT (event_id, event_type) DO NOTHING",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 7
+    },
+    "nullable": []
+  },
+  "hash": "b6e85df2c2eeeffe0d045174c61df76ed89f678db0a0fe9927bb18c0d068e7ab"
+}

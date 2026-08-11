@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT OR REPLACE INTO metrics_container\n             (res, ts, server_id, container_id, app_id, cpu_avg, cpu_max, mem_bytes,\n              mem_max, mem_limit, net_rx, net_tx, restart_count, source)\n             VALUES ('raw', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'docker')",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 12
+    },
+    "nullable": []
+  },
+  "hash": "5fcfa1c4dd8a2337a38f98a051af02e1922368cc0ebc2c137c460381cfef238e"
+}

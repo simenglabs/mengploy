@@ -1,0 +1,19 @@
+# Spesifikasi desain
+
+Ditulis oleh agent **uiux**, dibaca oleh agent **frontend**.
+Satu file per fitur: `docs/design/<nama-fitur>.md`.
+
+Struktur wajib tiap file:
+
+1. **Tujuan** — apa yang dipecahkan halaman/komponen ini.
+2. **Layout** — sketsa ASCII kalau membantu.
+3. **Komponen** — satu bagian per komponen, masing-masing dengan enam state:
+   default, loading, empty, error, disabled, success.
+4. **Responsif** — perilaku di lebar sempit, kolom mana yang disembunyikan.
+5. **Aksesibilitas** — label, urutan fokus, kontras, status yang tidak
+   bergantung warna saja.
+6. **Copywriting** — tabel `kunci → teks final` dalam Bahasa Indonesia.
+7. **Catatan implementasi** — untuk agent frontend.
+
+Token warna dan tipografi diambil dari `const CSS` di `src/web.rs:12`.
+Jangan mengarang nilai baru tanpa alasan tertulis.

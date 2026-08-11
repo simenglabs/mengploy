@@ -1,0 +1,21 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT 1 as locked FROM fleet_server_locks WHERE server_id = ? AND expires_at > ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "locked",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "fda7990d928e37b1438b59cde419082b3584e37e54265337db56cc5eb372e958"
+}

@@ -1,0 +1,33 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT COALESCE(d.started_at, d.created_at) as ts, a.name as app_name\n         FROM deployments d JOIN apps a ON a.id = d.app_id\n         WHERE a.server_id = ? AND COALESCE(d.started_at, d.created_at) >= ?\n         ORDER BY ts ASC",
+  "describe": {
+    "columns": [
+      {
+        "name": "ts",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": "Expression"
+      },
+      {
+        "name": "app_name",
+        "ordinal": 1,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "apps",
+            "name": "name"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "9068b3234e53b3258820830f24f04e09f03eb94f6b07199c3de3a51dbf57a9b7"
+}

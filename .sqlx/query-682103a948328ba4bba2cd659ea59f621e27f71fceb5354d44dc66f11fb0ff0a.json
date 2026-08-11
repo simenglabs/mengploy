@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE deployments\n         SET heartbeat_at = ?\n         WHERE id = ?\n           AND status IN ('queued', 'pulling', 'starting', 'checking')\n           AND EXISTS (\n               SELECT 1 FROM apps\n               WHERE apps.id = deployments.app_id\n                 AND apps.lock_token = deployments.id\n                 AND apps.lock_expires_at > ?\n           )",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "682103a948328ba4bba2cd659ea59f621e27f71fceb5354d44dc66f11fb0ff0a"
+}

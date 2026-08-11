@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO apps (id, server_id, name, port, health_path, created_at, updated_at) VALUES ('app1', 'srv1', 'app', 80, '/', 0, 0)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": []
+  },
+  "hash": "602f1e96a5edffdd619aa320379f235c8aafad6bb99d910e61aa821fafaee3bb"
+}

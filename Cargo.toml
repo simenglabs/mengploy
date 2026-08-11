@@ -1,0 +1,43 @@
+[package]
+name = "mengdep"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+age = { version = "0.12.1", features = ["armor"] }
+anyhow = "1.0.104"
+hmac = "0.12.1"
+argon2 = { version = "0.5.3", features = ["std"] }
+axum = "0.8.9"
+axum-extra = { version = "0.12.6", features = ["cookie"] }
+# ponytail: fitur default bollard ("http", "pipe") sudah cukup untuk unix
+# socket lokal via hyperlocal — TIDAK ada fitur TLS/TCP yang diaktifkan,
+# jadi jalur DOCKER_HOST=tcp:// tidak pernah terkompilasi (invariant 13).
+bollard = "0.21.0"
+dotenvy = "0.15.7"
+# ponytail: bukan crate baru di dependency tree — hyper/hyper-util/
+# http-body-util sudah transitif lewat bollard+axum, sekadar dipromosikan ke
+# dependensi langsung. Dipakai `deployments::engine` buat health check HTTP
+# polos ke IP container (invariant 14) — TANPA TLS (`HttpConnector` biasa,
+# bukan `HttpsConnector`), jadi tidak menarik rustls/openssl-sys apa pun.
+http-body-util = "0.1.4"
+hyper-rustls = { version = "0.27.9", default-features = false, features = ["http1", "ring", "webpki-roots"] }
+rustls = { version = "0.23.37", default-features = false, features = ["ring"] }
+hyper = { version = "1.11", features = ["client", "http1"] }
+hyper-util = { version = "0.1.20", features = ["client-legacy", "http1", "tokio"] }
+maud = { version = "0.27.0", features = ["axum"] }
+openssh = { version = "0.11.6", features = ["native-mux"] }
+rand = "0.10.2"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+sha2 = "0.10.9"
+sqlx = { version = "0.9.0", features = ["runtime-tokio", "sqlite", "macros", "migrate"] }
+time = "0.3.55"
+tokio = { version = "1.53.1", features = ["rt-multi-thread", "macros", "net", "signal"] }
+tokio-stream = { version = "0.1.19", default-features = false, features = ["sync"] }
+tower-service = "0.3.3"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["json", "env-filter"] }
+
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE fleet_operations SET status = ? WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "832fb7271f0885059d227e1c6a0c38721b99a7ba7e12470d3a2a8e70c8881475"
+}

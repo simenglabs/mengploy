@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE servers SET status = ?, host_key_fingerprint = 'SHA256:test' WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "24123ec9f5ae5ff3bbe1efd1caa04a90af8db549191886309f20b52c59b49199"
+}
