@@ -6,7 +6,15 @@ Versioning.
 
 ## [Unreleased]
 
-- (kosong — tidak ada perubahan yang belum dirilis)
+### Diperbaiki
+
+- **Private key SSH valid ditolak server saat verifikasi.** Penyimpanan kunci
+  memakai `.trim()` yang membuang newline penutup `-----END OPENSSH PRIVATE
+  KEY-----`; OpenSSH menolak file kunci tanpa newline akhir (`invalid format`)
+  sehingga verifikasi selalu gagal dengan "Kunci privat ditolak" meskipun
+  public key sudah benar di `authorized_keys`. Kini kunci dinormalisasi:
+  whitespace tepi dibuang tetapi newline akhir dijamin ada; ditambah test unit
+  untuk tiga kasus (newline ada, hilang, whitespace tepi).
 
 ## [0.1.1] - 2026-08-11
 

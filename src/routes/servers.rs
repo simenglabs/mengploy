@@ -80,10 +80,12 @@ pub async fn server_baru_submit(
         return Ok((axum::http::StatusCode::BAD_REQUEST, body).into_response());
     }
 
-    let ssh_key_encrypted = state
-        .crypto
-        .encrypt(form.ssh_key.trim())
-        .map_err(AppError::from)?;
+    // `.trim()` saja akan membuang newline penutup `-----END OPENSSH PRIVATE
+    // KEY-----` — OpenSSH menolak file kunci tanpa newline akhir (`invalid
+    // format`), sehingga key yang valid pun ditolak server. Normalisasi
+    // memakai `trim` untuk whitespace tepi lalu memastikan newline akhir ada.
+    let ssh_key = normalisasi_ssh_key(&form.ssh_key);
+    let ssh_key_encrypted = state.crypto.encrypt(&ssh_key).map_err(AppError::from)?;
 
     let id = repo::insert_pending(
         &state.db_write,
@@ -129,6 +131,17 @@ fn validasi_server_baru(form: &ServerBaruForm) -> Result<(), &'static str> {
         );
     }
     Ok(())
+}
+
+/// Buang whitespace tepi dari kunci privat SSH tanpa menghilangkan newline
+/// penutup wajib (`\n` setelah `-----END OPENSSH PRIVATE KEY-----`).
+fn normalisasi_ssh_key(raw: &str) -> String {
+    let trimmed = raw.trim();
+    if trimmed.ends_with('\n') {
+        trimmed.to_string()
+    } else {
+        format!("{trimmed}\n")
+    }
 }
 
 fn validasi_host(host: &str) -> Result<(), &'static str> {
@@ -272,6 +285,35 @@ pub async fn konfirmasi_hostkey(
 }
 
 /// `GET /servers/{id}` — detail (kerangka, tanpa grafik).
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn normalisasi_mempertahankan_newline_akhir_saat_ada() {
+        let key = "-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----\n";
+        assert_eq!(normalisasi_ssh_key(key), key);
+    }
+
+    #[test]
+    fn normalisasi_menambahkan_newline_akhir_saat_tidak_ada() {
+        let tanpa_newline =
+            "-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----";
+        let hasil = normalisasi_ssh_key(tanpa_newline);
+        assert!(hasil.ends_with('\n'), "key wajib diakhiri newline");
+        assert_eq!(hasil.trim_end(), tanpa_newline);
+    }
+
+    #[test]
+    fn normalisasi_membuang_whitespace_tepi() {
+        let key =
+            "  \n-----BEGIN OPENSSH PRIVATE KEY-----\nisi\n-----END OPENSSH PRIVATE KEY-----\n  ";
+        let hasil = normalisasi_ssh_key(key);
+        assert!(hasil.starts_with("-----BEGIN"));
+        assert!(hasil.ends_with('\n'));
+        assert!(!hasil.starts_with(' ') && !hasil.starts_with('\n'));
+    }
+}
 #[derive(Deserialize)]
 pub struct MetricsQuery {
     /// Rentang dalam jam; dibatasi agar handler tidak membaca histori tanpa batas.
