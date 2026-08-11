@@ -4,6 +4,25 @@ Semua perubahan penting pada **mengploy** dicatat di sini.
 Format mengikuti prinsip Keep a Changelog dan versi release memakai Semantic
 Versioning.
 
+## [Unreleased]
+
+### Ditambahkan
+
+- **Referensi repo Git (opsional) di form tambah app.** Kolom `repo_url`
+  (migrasi 0012) menyimpan URL repository GitHub/GitLab sebagai metadata
+  murni — ditampilkan sebagai tautan di halaman detail app. Mengploy TIDAK
+  pernah clone atau build repo (PRD §1.5 non-goal "Membangun image sendiri
+  — CI yang membangun"); CI Anda yang membangun image lalu memanggil
+  `POST /api/v1/deploy`.
+- **Generator workflow CI contoh.** Halaman detail app punya tombol
+  "Unduh GitHub Actions" dan "Unduh GitLab CI" — file YAML yang isinya
+  sudah terisi nama app + pemanggilan `POST /api/v1/deploy` dengan digest
+  (bukan tag), placeholder registry yang harus diganti pengguna, dan
+  placeholder secret `MENGPLOY_URL`/`DEPLOY_TOKEN`. Nama app dikirim lewat
+  env `APP_NAME` (bukan interpolasi langsung) dan nama app dibatasi ke
+  karakter `[A-Za-z0-9_.-]` (konsisten nama container Docker) sehingga
+  kutip/backslash/newline tidak pernah bisa masuk ke workflow.
+
 ## [0.1.3] - 2026-08-11
 
 ### Diperbaiki
@@ -24,8 +43,6 @@ Versioning.
   preferensi tetap **ed25519 → ecdsa → rsa** (fallback baris pertama bila
   ketiganya tidak ada), sehingga fingerprint stabil antar siklus; ditambah 5
   test unit untuk urutan, kelipatan kunci, dan fallback.
-
-## [0.1.2] - 2026-08-11
 
 ## [0.1.2] - 2026-08-11
 

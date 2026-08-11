@@ -31,6 +31,7 @@ pub struct NewApp<'a> {
     pub health_grace_secs: i64,
     pub port: i64,
     pub restart_policy: &'a str,
+    pub repo_url: Option<&'a str>,
 }
 
 /// Penanda aman yang bisa dipetakan handler menjadi 409 tanpa membocorkan
@@ -67,8 +68,8 @@ pub async fn insert(pool: &SqlitePool, new: NewApp<'_>) -> Result<String> {
     sqlx::query!(
         "INSERT INTO apps
             (id, server_id, name, health_path, health_grace_secs, port, restart_policy,
-             created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+             repo_url, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         id,
         new.server_id,
         new.name,
@@ -76,6 +77,7 @@ pub async fn insert(pool: &SqlitePool, new: NewApp<'_>) -> Result<String> {
         new.health_grace_secs,
         new.port,
         new.restart_policy,
+        new.repo_url,
         now,
         now,
     )
@@ -91,7 +93,7 @@ pub async fn find_by_id(pool: &SqlitePool, id: &str) -> Result<Option<AppRingkas
     let row = sqlx::query_as!(
         AppRingkas,
         r#"SELECT id as "id!", server_id, name, health_path, health_grace_secs, port,
-                  restart_policy, created_at, updated_at
+                  restart_policy, repo_url, created_at, updated_at
            FROM apps WHERE id = ?"#,
         id
     )
@@ -107,7 +109,7 @@ pub async fn find_by_name(pool: &SqlitePool, name: &str) -> Result<Option<AppRin
     let row = sqlx::query_as!(
         AppRingkas,
         r#"SELECT id as "id!", server_id, name, health_path, health_grace_secs, port,
-                  restart_policy, created_at, updated_at
+                  restart_policy, repo_url, created_at, updated_at
            FROM apps WHERE name = ?"#,
         name
     )
@@ -122,7 +124,7 @@ pub async fn list_ringkas(pool: &SqlitePool) -> Result<Vec<AppRingkas>> {
     sqlx::query_as!(
         AppRingkas,
         r#"SELECT id as "id!", server_id, name, health_path, health_grace_secs, port,
-                  restart_policy, created_at, updated_at
+                  restart_policy, repo_url, created_at, updated_at
            FROM apps ORDER BY name ASC"#
     )
     .fetch_all(pool)
@@ -134,7 +136,7 @@ pub async fn list_by_server(pool: &SqlitePool, server_id: &str) -> Result<Vec<Ap
     sqlx::query_as!(
         AppRingkas,
         r#"SELECT id as "id!", server_id, name, health_path, health_grace_secs, port,
-                  restart_policy, created_at, updated_at
+                  restart_policy, repo_url, created_at, updated_at
            FROM apps WHERE server_id = ? ORDER BY name ASC"#,
         server_id
     )

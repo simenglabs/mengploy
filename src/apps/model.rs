@@ -16,6 +16,10 @@ pub struct AppRingkas {
     pub health_grace_secs: i64,
     pub port: i64,
     pub restart_policy: String,
+    /// URL repository (GitHub/GitLab) — referensi metadata opsional,
+    /// TANPA akses API dan TANPA build oleh mengploy (PRD §1.5 non-goal
+    /// "Membangun image sendiri"). `None` = tidak ada referensi repo.
+    pub repo_url: Option<String>,
     pub created_at: i64,
     pub updated_at: i64,
 }

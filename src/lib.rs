@@ -32,3 +32,4 @@ pub mod ssh;
 pub mod state;
 mod web;
 pub mod worker;
+pub mod workflows;

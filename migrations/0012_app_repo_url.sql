@@ -1,0 +1,11 @@
+-- Migrasi 0012: referensi repo Git pada app.
+--
+-- Kolom opsional yang menyimpan URL repository (GitHub/GitLab) milik app.
+-- Murni metadata/referensi — TIDAK ada akses API, TIDAK ada token, TIDAK
+-- ada kloning/build oleh mengploy (PRD §1.5 non-goal: "Membangun image
+-- sendiri — CI yang membangun"). Dipakai dua hal:
+--   1. menampilkan tautan repo di halaman detail app, dan
+--   2. generator workflow CI (GitHub Actions / GitLab CI) yang isinya
+--      sudah terisi nama app + contoh pemanggilan POST /api/v1/deploy.
+-- NULL = app tidak punya referensi repo (tetap valid, semua fitur jalan).
+ALTER TABLE apps ADD COLUMN repo_url TEXT;

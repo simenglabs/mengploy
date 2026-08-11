@@ -1,6 +1,6 @@
 {
   "db_name": "SQLite",
-  "query": "SELECT id as \"id!\", server_id, name, health_path, health_grace_secs, port,\n                  restart_policy, created_at, updated_at\n           FROM apps WHERE server_id = ? ORDER BY name ASC",
+  "query": "SELECT id as \"id!\", server_id, name, health_path, health_grace_secs, port,\n                  restart_policy, repo_url, created_at, updated_at\n           FROM apps WHERE server_id = ? ORDER BY name ASC",
   "describe": {
     "columns": [
       {
@@ -81,8 +81,19 @@
         }
       },
       {
-        "name": "created_at",
+        "name": "repo_url",
         "ordinal": 7,
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "apps",
+            "name": "repo_url"
+          }
+        }
+      },
+      {
+        "name": "created_at",
+        "ordinal": 8,
         "type_info": "Integer",
         "origin": {
           "Table": {
@@ -93,7 +104,7 @@
       },
       {
         "name": "updated_at",
-        "ordinal": 8,
+        "ordinal": 9,
         "type_info": "Integer",
         "origin": {
           "Table": {
@@ -114,9 +125,10 @@
       false,
       false,
       false,
+      true,
       false,
       false
     ]
   },
-  "hash": "b7e9aa4a7f753cabd14a7304de39d59bf96fbd5c08421cee11d15833547f9014"
+  "hash": "a7306066b202e72eca575c30c2a4258996604b08d2f3ff2b0476773eed7c940e"
 }

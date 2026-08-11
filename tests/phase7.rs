@@ -175,6 +175,7 @@ async fn lock_server_atomically_mencegah_prune_saat_deploy_aktif() {
             health_grace_secs: 1,
             port: 8080,
             restart_policy: "unless-stopped",
+            repo_url: None,
         },
     )
     .await
@@ -218,6 +219,7 @@ async fn app_baru_ditolak_saat_lock_server_prune_aktif() {
             health_grace_secs: 1,
             port: 8081,
             restart_policy: "unless-stopped",
+            repo_url: None,
         },
     )
     .await;
@@ -242,6 +244,7 @@ async fn app_baru_ditolak_saat_lock_server_prune_aktif() {
             health_grace_secs: 1,
             port: 8082,
             restart_policy: "unless-stopped",
+            repo_url: None,
         },
     )
     .await

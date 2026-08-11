@@ -103,6 +103,7 @@ async fn seed_app(state: &AppState, server_id: &str) -> String {
             health_grace_secs: 1,
             port: 8080,
             restart_policy: "unless-stopped",
+            repo_url: None,
         },
     )
     .await

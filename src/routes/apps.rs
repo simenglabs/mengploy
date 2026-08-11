@@ -7,6 +7,7 @@ use std::collections::{HashMap, HashSet};
 use anyhow::Context as _;
 use axum::Form;
 use axum::extract::{Extension, Path, State};
+use axum::http::header;
 use axum::response::{IntoResponse, Redirect, Response};
 use serde::Deserialize;
 
@@ -63,6 +64,9 @@ pub struct AppBaruForm {
     port: i64,
     health_path: String,
     health_grace_secs: i64,
+    /// Referensi repo Git (opsional, murni metadata — PRD §1.5: mengploy
+    /// tidak pernah build image, CI yang membangun).
+    repo_url: Option<String>,
 }
 
 /// `POST /apps` — validasi, simpan, redirect ke detail.
@@ -87,6 +91,14 @@ pub async fn app_baru_submit(
         form.health_path.trim().to_string()
     };
 
+    // Referensi repo opsional — dipakai untuk tautan dan generator workflow
+    // CI. TIDAK pernah dipakai untuk clone/build (PRD §1.5).
+    let repo_url = form
+        .repo_url
+        .as_deref()
+        .map(str::trim)
+        .filter(|url| !url.is_empty());
+
     let id = match apps_repo::insert(
         &state.db_write,
         NewApp {
@@ -98,6 +110,7 @@ pub async fn app_baru_submit(
             // Invariant §5 no.5 — SEMUA container `unless-stopped`, tidak
             // ada opsi lain, jadi tidak ada input form untuk ini.
             restart_policy: "unless-stopped",
+            repo_url,
         },
     )
     .await
@@ -113,10 +126,17 @@ pub async fn app_baru_submit(
 
     Ok(Redirect::to(&format!("/apps/{id}")).into_response())
 }
-
 fn validasi_app_baru(form: &AppBaruForm) -> Result<(), &'static str> {
-    if form.name.trim().is_empty() {
+    let name = form.name.trim();
+    if name.is_empty() {
         return Err("Nama app wajib diisi.");
+    }
+    if !nama_app_valid(name) {
+        return Err(
+            "Nama app hanya boleh huruf, angka, titik, garis bawah, dan tanda hubung \
+             (a-z, 0-9, ., _, -). Langkah perbaikan: Hindari spasi dan karakter khusus \
+             karena nama dipakai sebagai nama container Docker.",
+        );
     }
     if form.server_id.trim().is_empty() {
         return Err("Server wajib dipilih.");
@@ -127,7 +147,83 @@ fn validasi_app_baru(form: &AppBaruForm) -> Result<(), &'static str> {
     if form.health_grace_secs < 0 {
         return Err("Grace period tidak boleh negatif.");
     }
+    if let Some(url) = form
+        .repo_url
+        .as_deref()
+        .map(str::trim)
+        .filter(|url| !url.is_empty())
+        && !repo_url_valid(url)
+    {
+        return Err(
+            "URL repo tidak valid. Langkah perbaikan: Gunakan URL lengkap \
+             https://github.com/org/repo atau https://gitlab.com/org/repo.",
+        );
+    }
     Ok(())
+}
+
+/// Nama app dibatasi ke karakter yang sah untuk nama container Docker
+/// (`[a-zA-Z0-9][a-zA-Z0-9_.-]*`) — sekaligus menutup injeksi shell/YAML
+/// lewat generator workflow (kutip tunggal, kutip ganda, backslash, newline
+/// tidak pernah bisa masuk).
+fn nama_app_valid(nama: &str) -> bool {
+    !nama.is_empty()
+        && nama
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '-'))
+}
+
+/// URL repo Git: harus HTTPS dengan host non-kosong dan ada path repo —
+/// murni metadata referensi (tidak pernah di-fetch mengploy, PRD §1.5),
+/// jadi cukup memastikan bentuk URL yang masuk akal, bukan daftar host
+/// tertutup yang bisa menolak GitLab self-hosted.
+fn repo_url_valid(url: &str) -> bool {
+    if url.contains(char::is_whitespace) {
+        return false;
+    }
+    let Some(rest) = url.strip_prefix("https://") else {
+        return false;
+    };
+    let Some((host, path)) = rest.split_once('/') else {
+        return false;
+    };
+    !host.is_empty() && !path.is_empty()
+}
+
+/// `GET /apps/{id}/workflow/{jenis}` — unduh workflow CI contoh (isinya
+/// sudah terisi nama app). `jenis` = `github` atau `gitlab`. Mengembalikan
+/// file teks YAML dengan `Content-Disposition: attachment` supaya browser
+/// mengunduhnya (bukan merender), sesuai pola unduh log.
+pub async fn workflow_unduh(
+    State(state): State<AppState>,
+    Path((id, jenis)): Path<(String, String)>,
+) -> Result<Response, AppError> {
+    let app = apps_repo::find_by_id(&state.db_read, &id)
+        .await?
+        .ok_or_else(not_found)?;
+
+    let (nama_file, isi) = match jenis.as_str() {
+        "github" => (
+            crate::workflows::GITHUB_ACTIONS_PATH,
+            crate::workflows::github_actions_workflow(&app.name),
+        ),
+        "gitlab" => (
+            crate::workflows::GITLAB_CI_PATH,
+            crate::workflows::gitlab_ci_workflow(&app.name),
+        ),
+        _ => return Err(not_found()),
+    };
+
+    let nama_unduh = nama_file.rsplit('/').next().unwrap_or(nama_file);
+    Ok((
+        [(header::CONTENT_TYPE, "text/yaml")],
+        [(
+            header::CONTENT_DISPOSITION,
+            format!("attachment; filename=\"{nama_unduh}\""),
+        )],
+        isi,
+    )
+        .into_response())
 }
 
 /// `GET /apps/{id}` — overview: konfigurasi, domain, token, riwayat.
@@ -631,4 +727,52 @@ pub async fn env_submit(
 
     let body = render_environment(&state, &session, &id, Some(&pesan), &diffs).await?;
     Ok(body.into_response())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn nama_app_valid_menerima_huruf_angka_titik_garis_bawah_dan_hubung() {
+        assert!(nama_app_valid("api"));
+        assert!(nama_app_valid("api-gateway"));
+        assert!(nama_app_valid("api.gateway"));
+        assert!(nama_app_valid("api_gateway"));
+        assert!(nama_app_valid("App123"));
+    }
+
+    #[test]
+    fn nama_app_valid_menolak_karakter_yang_membahayakan_workflow() {
+        // Karakter ini bisa merusak payload JSON di generator workflow CI
+        // (shell single-quote, kutip ganda, backslash, newline).
+        assert!(!nama_app_valid("it's"));
+        assert!(!nama_app_valid("na\"ma"));
+        assert!(!nama_app_valid("na\\ma"));
+        assert!(!nama_app_valid("na\nma"));
+        assert!(!nama_app_valid("na ma"));
+    }
+
+    #[test]
+    fn nama_app_valid_menolak_kosong() {
+        assert!(!nama_app_valid(""));
+    }
+
+    #[test]
+    fn repo_url_valid_menerima_github_gitlab_dan_self_hosted() {
+        assert!(repo_url_valid("https://github.com/org/repo"));
+        assert!(repo_url_valid("https://gitlab.com/org/repo"));
+        assert!(repo_url_valid("https://gitlab.perusahaan.id/org/repo"));
+        assert!(repo_url_valid("https://git.example.com/org/repo"));
+    }
+
+    #[test]
+    fn repo_url_valid_menolak_bentuk_url_yang_tidak_layak() {
+        assert!(!repo_url_valid("ftp://github.com/org/repo"));
+        assert!(!repo_url_valid("http://github.com/org/repo"));
+        assert!(!repo_url_valid("https://github.com"));
+        assert!(!repo_url_valid("https://github.com/"));
+        assert!(!repo_url_valid("https://github.com/org/repo dengan spasi"));
+        assert!(!repo_url_valid("bukan-url"));
+    }
 }

@@ -188,6 +188,7 @@ mod tests {
             health_grace_secs: 30,
             port: 8080,
             restart_policy: "unless-stopped".to_string(),
+            repo_url: None,
             created_at: 0,
             updated_at: 0,
         }

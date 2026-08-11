@@ -71,6 +71,7 @@ pub fn build_router(state: AppState) -> Router {
         .route("/apps/{id}/domain", post(apps::domain_submit))
         .route("/apps/{id}/token", post(apps::token_submit))
         .route("/apps/{id}/deployments", get(apps::tab_deployments))
+        .route("/apps/{id}/workflow/{jenis}", get(apps::workflow_unduh))
         .route("/apps/{id}/logs", get(apps::tab_logs))
         .route("/apps/{id}/logs/isi", get(logs::app_log_isi))
         .route(

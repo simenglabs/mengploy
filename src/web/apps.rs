@@ -95,6 +95,11 @@ pub fn render_app_baru(
                     p.field-hint { "Dipakai sebagai nama container dan harus cocok dengan field \"app\" di POST /api/v1/deploy." }
                 }
                 div.field {
+                    label for="repo_url" { "Repo URL (opsional)" }
+                    input id="repo_url" name="repo_url" type="url" placeholder="https://github.com/org/repo";
+                    p.field-hint { "Referensi repository (GitHub/GitLab) untuk tautan di halaman detail dan generator workflow CI. Mengploy tidak pernah clone atau build repo ini — CI Anda yang membangun image." }
+                }
+                div.field {
                     label for="port" { "Port Container" }
                     input id="port" name="port" type="number" min="1" max="65535" required;
                 }
@@ -155,6 +160,21 @@ pub fn render_app_detail(
                 div.detail-row { span { "Health Path" } span { (app.health_path) } }
                 div.detail-row { span { "Grace Period" } span { (app.health_grace_secs) "s" } }
                 div.detail-row { span { "Restart Policy" } span { (app.restart_policy) } }
+            }
+
+            section.detail-card aria-labelledby="judul-repo" {
+                h2 id="judul-repo" { "Repository" }
+                @if let Some(url) = &app.repo_url {
+                    p { a href=(url) target="_blank" rel="noopener" { (url) } }
+                } @else {
+                    p { "Belum ada referensi repo — generator workflow tetap bisa dipakai di bawah." }
+                }
+                p.field-hint { "Mengploy tidak pernah clone atau build repo ini; CI Anda yang membangun image (PRD: membangun image sendiri bukan tujuan)." }
+                div.field-actions {
+                    span { "Workflow CI contoh:" }
+                    a.btn href=(format!("/apps/{}/workflow/github", app.id)) { "Unduh GitHub Actions" }
+                    a.btn href=(format!("/apps/{}/workflow/gitlab", app.id)) { "Unduh GitLab CI" }
+                }
             }
 
             section.detail-card aria-labelledby="judul-domain" {
@@ -251,6 +271,7 @@ mod tests {
             health_grace_secs: 30,
             port: 8080,
             restart_policy: "unless-stopped".to_string(),
+            repo_url: None,
             created_at: 0,
             updated_at: 0,
         }
