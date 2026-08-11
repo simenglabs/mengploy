@@ -23,8 +23,8 @@ pub fn render_server_detail(
         }
         @match server.status {
             StatusServer::Unreachable => (panel_unreachable(server, csrf_token)),
-            StatusServer::Pending => (panel_pending()),
-            StatusServer::Verifying => (panel_verifying()),
+            StatusServer::Pending => (panel_pending(&server.id)),
+            StatusServer::Verifying => (panel_verifying(&server.id)),
             StatusServer::Online => {}
         }
         div.detail-grid {
@@ -315,11 +315,14 @@ fn belum_atau(value: &Option<String>, status: StatusServer) -> String {
 fn panel_unreachable(server: &ServerRingkas, csrf_token: &str) -> Markup {
     html! { div.error-box.danger { h2 { "[x] Server Tidak Terjangkau" } @if let Some(pesan) = &server.last_error_message { p { (pesan) } } @else { p { "Server gagal dihubungi berturut-turut oleh worker polling." } } form method="post" action=(format!("/servers/{}/verifikasi/ulang", server.id)) { input type="hidden" name="csrf_token" value=(csrf_token); button.btn type="submit" { "Mulai Verifikasi Ulang" } } } }
 }
-fn panel_pending() -> Markup {
-    html! { div.alert.alert-warning { span { "[!] Server ini belum diverifikasi. Silakan jalankan proses pemeriksaan sistem." } " " a.btn href="verifikasi" { "Jalankan Verifikasi" } } }
+// href memakai path ABSOLUT `/servers/{id}/verifikasi` — href relatif
+// "verifikasi" dari halaman `/servers/{id}` meresolusi ke `/servers/verifikasi`
+// yang tidak punya route → 404 (regresi pernah terjadi, dijaga test di bawah).
+fn panel_pending(server_id: &str) -> Markup {
+    html! { div.alert.alert-warning { span { "[!] Server ini belum diverifikasi. Silakan jalankan proses pemeriksaan sistem." } " " a.btn href=(format!("/servers/{server_id}/verifikasi")) { "Jalankan Verifikasi" } } }
 }
-fn panel_verifying() -> Markup {
-    html! { div.alert.alert-warning { span { "[*] Proses verifikasi sistem sedang berlangsung." } " " a.btn href="verifikasi" { "Lihat Progres Verifikasi" } } }
+fn panel_verifying(server_id: &str) -> Markup {
+    html! { div.alert.alert-warning { span { "[*] Proses verifikasi sistem sedang berlangsung." } " " a.btn href=(format!("/servers/{server_id}/verifikasi")) { "Lihat Progres Verifikasi" } } }
 }
 
 #[cfg(test)]
@@ -357,6 +360,47 @@ mod tests {
         assert!(markup.contains("Belum ada sampel metrik"));
         assert!(markup.contains("range-active"));
     }
+    #[test]
+    fn detail_pending_dan_verifying_memakai_href_absolut_verifikasi() {
+        // Regresi: href relatif "verifikasi" dari /servers/{id} meresolusi ke
+        // /servers/verifikasi yang 404. Link harus absolut.
+        let pending = render_server_detail(
+            &server(StatusServer::Pending),
+            &[],
+            &MetricDashboard::default(),
+            6,
+            "tok",
+            None,
+        )
+        .into_string();
+        assert!(
+            pending.contains(r#"href="/servers/srv-1/verifikasi""#),
+            "link pending harus absolut: {pending}"
+        );
+        assert!(
+            !pending.contains(r#"href="verifikasi""#),
+            "href relatif verifikasi dilarang: {pending}"
+        );
+
+        let verifying = render_server_detail(
+            &server(StatusServer::Verifying),
+            &[],
+            &MetricDashboard::default(),
+            6,
+            "tok",
+            None,
+        )
+        .into_string();
+        assert!(
+            verifying.contains(r#"href="/servers/srv-1/verifikasi""#),
+            "link verifying harus absolut: {verifying}"
+        );
+        assert!(
+            !verifying.contains(r#"href="verifikasi""#),
+            "href relatif verifikasi dilarang: {verifying}"
+        );
+    }
+
     #[test]
     fn detail_unreachable_menampilkan_pesan_dan_tombol_verifikasi_ulang() {
         let markup = render_server_detail(
