@@ -6,11 +6,26 @@ Versioning.
 
 ## [Unreleased]
 
-- Menyiapkan branding produk `mengploy` tanpa memutus crate/binary dan
-  environment variable `MENGDEP_*` yang sudah digunakan.
-- Menambahkan installer `curl | sh` dengan verifikasi SHA-256.
-- Menambahkan CI dan automatic GitHub Release untuk Linux serta macOS.
-- Memperbarui panduan menjalankan aplikasi tanpa Rust pada mesin operator.
+- (kosong — tidak ada perubahan yang belum dirilis)
+
+## [0.1.1] - 2026-08-11
+
+### Diperbaiki
+
+- **404 saat masuk ke halaman Verifikasi Server.** Tombol "Jalankan Verifikasi"
+  dan "Lihat Progres Verifikasi" di halaman Detail Server memakai href relatif
+  (`verifikasi`) sehingga browser meresolusi ke `/servers/verifikasi` yang tidak
+  punya route. Kini memakai href absolut `/servers/{id}/verifikasi`; ditambah
+  test regresi yang melarang href relatif muncul lagi.
+
+### Ditambahkan
+
+- Installer `curl | sh` kini otomatis menulis `INSTALL_DIR` ke PATH pada shell
+  config user: prioritas `~/.zshrc`, fallback `~/.bashrc`, dan membuat
+  `~/.bashrc` bila keduanya tidak ada. Idempoten (tidak menumpuk duplikat) dan
+  me-source config otomatis bila shell aktif cocok (bash↔`.bashrc`,
+  zsh↔`.zshrc`).
+- Target release dipersempit ke Linux x86_64 dan macOS Apple Silicon (arm64/M1).
 
 ## [0.1.0] - 2026-08-11
 
